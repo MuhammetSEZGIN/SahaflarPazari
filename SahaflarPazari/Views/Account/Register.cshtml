@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <!-- Jquery ve Bootstrap eklemeleri -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Kayıt Ol</h5>
+                        <form id="registerForm" method="post">
+
+                            <div class="form-group">
+                                <label for="inputUserName">Kullanici Adi</label>
+                                <input type="text" class="form-control" id="inputUserName" name="KullaniciAdi" required>
+                                <div class="invalid-feedback adControl">
+                                    Lütfen geçerli bir ad giriniz.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputFirstName">Ad</label>
+                                <input type="text" class="form-control" id="inputFirstName" name="Ad" required>
+                                <div class="invalid-feedback">
+                                    Lütfen geçerli bir ad giriniz.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputLastName">Soyad</label>
+                                <input type="text" class="form-control" id="inputLastName" name="Soyad" required>
+                                <div class="invalid-feedback">
+                                    Lütfen geçerli bir soyad giriniz.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputPassword">Şifre</label>
+                                <input type="password" class="form-control" id="inputPassword" name="Sifre" required>
+                                <div class="invalid-feedback sifreControl">
+                                    Şifreniz en az 6 karakter uzunluğunda olmalıdır.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputPhone">Telefon</label>
+                                <input type="text" class="form-control" id="inputPhone" name="Telefon" required>
+                                <div class="invalid-feedback">
+                                    Lütfen geçerli bir telefon numarası giriniz.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputEmail">E-Posta</label>
+                                <input type="text" class="form-control" id="inputEmail" name="Eposta" required>
+                                <div class="invalid-feedback">
+                                    Lütfen geçerli bir e-posta adresi giriniz.
+                                </div>
+                            </div>
+
+
+                            <div id="generalError" class="text-danger"></div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary kydl">Kayıt Ol</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function validateField(field, id) {
+            if (field.trim() === '') {
+                $(id).addClass('is-invalid');
+            } else {
+                $(id).removeClass('is-invalid');
+            }
+        }
+
+        $(document).ready(function () {
+            $('#registerForm').submit(function (event) {
+                // Formun otomatik olarak submit olmasını engelle
+                
+
+                // Form alanlarını seçin
+                var userName = $("#inputUserName").val();
+                var firstName = $('#inputFirstName').val();
+                var lastName = $('#inputLastName').val();
+                var email = $('#inputEmail').val();
+                var phone = $('#inputPhone').val();
+                var password = $('#inputPassword').val();
+
+                //var Kullanici = {
+                //    "KullaniciAdi": firstName + " " + lastName,
+                //    "Sifre": password,
+                //    "KullaniciBilgileri": {
+                //        "Ad": firstName,
+                //        "Soyad": lastName,
+                //        "Eposta": email,
+                //        "Telefon": phone,
+                //    }
+                //};
+                var formData = $(this).serialize();
+
+                validateField(userName, '#inputUserName');
+
+                // Ad kontrolü
+                validateField(firstName, '#inputFirstName');
+
+                // Soyad kontrolü
+                validateField(lastName, '#inputLastName');
+
+                // E-posta kontrolü için regex ifadesi
+                var emailRegex = /^[A-Za-z0-9._%-]+@@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+
+                // E-posta kontrolü
+                if (!emailRegex.test(email)) {
+                    $('#inputEmail').addClass('is-invalid');
+                } else {
+                    $('#inputEmail').removeClass('is-invalid');
+                }
+
+                // Telefon kontrolü
+                var phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(phone)) {
+                    $('#inputPhone').addClass('is-invalid');
+                } else {
+                    $('#inputPhone').removeClass('is-invalid');
+                }
+
+                // Şifre kontrolü
+                if (password.length < 6) {
+                    $('#inputPassword').addClass('is-invalid');
+                } else {
+                    $('#inputPassword').removeClass('is-invalid');
+                }
+                var data = $('#registerForm').serialize();
+
+                event.preventDefault();
+                
+
+                    $.ajax({
+                        url: '/Account/Register',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+
+                            // Handle the response from the server
+                            if (response.success) {
+                                console.log("başarılı");
+                            } else if (response.type = "kullaniciAdi") {
+                                $("#adControl").html(response.message)
+                            } else {
+                                $(".sifreControl").html(response.message);
+                            }
+                            
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error if any
+                            alert(response.responseText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

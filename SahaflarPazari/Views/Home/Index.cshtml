@@ -1,0 +1,224 @@
+﻿@using SahaflarPazari.Models
+@model MainPageModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- Hero -->
+<div class="p-5 text-center bg-image rounded-3" style="background-image: url('../../Content/img/HeroSection/hero_image.jpg'); height: 400px; background-size: cover; position: relative;">
+
+    <div class="d-flex justify-content-center align-items-center h-100" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <div class="text-white">
+            <h2 class="mb-lg-1">"Eski Hikayeler, Yeni Yolculuklar"</h2>
+            <h4 class="mb-3">Sahaflar Pazarı'nda Başlar</h4>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-outline-light btn-lg" href="@Url.Action("Register","Account")" role="button">Şimdi Kaydol</a>
+            }
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- Categories Section Begin -->
+<section class="categories">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2>En Son Eklenenler</h2>
+                </div>
+            </div>
+            <div class="categories__slider owl-carousel">
+                @foreach (var item in Model.enSonEklenenler)
+                {
+                    <div class="col-lg-3">
+
+                        <div style="position: relative; text-align: center; color: white;">
+                            <a href="#!" id="dataNumber" data-ktgId="@item.KitapId" class="deneme">
+                                <img src="../Content/img/Kitap_Resimleri/@item.KitapResimleri.ToList()[0].DataYolu" alt="Paris">
+    
+                            </a>
+                        </div>
+                        
+                    </div>
+                }
+              
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Categories Section End -->
+<!-- Hero -->
+<section class="featured spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2>Tüm Kitaplar</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row featured__filter">
+            @foreach (var k in Model.kitap)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
+                    <div class="featured__item">
+                        <div class="featured__item__pic set-bg" data-setbg="../Content/img/Kitap_Resimleri/@k.KitapResimleri.ToList()[0].DataYolu">
+
+                            <ul class="featured__item__pic__hover">
+
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    var id = k.KitapId;
+                                    var customId1 = id + "books1";
+                                    var customId2 = id + "books2";
+                                    if (Model.istekListesiKitaplari.Count != 0 && Model.istekListesiKitaplari.Contains(k.KitapId))
+                                    {
+
+
+                                        <li><a href="#!" data-ktgId="@k.KitapId" class="removeList"><i id="@customId1" class="fa fa-heart red "></i></a></li>
+                                    }
+                                    else
+                                    {
+
+                                        <li><a href="#!" data-ktgId="@k.KitapId" class="updateList"><i id="@customId2" class="fa fa-heart black"></i></a></li>
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    <li><a href="/Account/Login" id="de" data-ktgId="@k.KitapId"><i class="fa fa-heart"></i></a></li>
+                                }
+
+                                <li><a href="#!" id="dataNumber" data-ktgId="@k.KitapId" class="deneme"><i class="fa fa-info-circle"></i></a></li>
+                                <li><a href="#!" class="addtocart" data-ktgId="@k.KitapId"><i class="fa fa-shopping-cart"></i></a></li>
+                            </ul>
+
+                        </div>
+                        <div class="featured__item__text">
+                            <h6>@k.KitapAdi</h6>
+                            <h5>@k.Fiyat</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>
+
+<style>
+    .black {
+        color: black;
+    }
+
+    /* Kırmızı renkte olan buton */
+    .red {
+        color: red;
+    }
+</style>
+<script src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script src="~/Content/js/bootstrap.min.js"></script>
+<script>
+
+
+    $(document).ready(function () {
+
+        $('.deneme').on('click', function (e) {
+            e.preventDefault();
+            var kitapId = $(this).data('ktgid');
+            window.location.href = '@Url.Action("Details", "Home")' + '/' + kitapId;
+            });
+
+            $('.addtocart').on('click', function (e) {
+            var id = $(this).attr('data-ktgId');
+            console.log(id);
+
+            var sId = "id=" + id;
+            console.log(sId);
+            // Send the serialized data to the server using AJAX
+            $.ajax({
+            type: "POST",
+            url: "/ShopCart/AddToCart",
+            data: sId,
+            success: function (response) {
+
+                if (response.success)
+                    $("#bookCount").text(response.BookCount);
+                else
+                    alert(response.message);
+
+            },
+            error: function (xhr, status, error) {
+            // Handle errors, if any
+            console.log(error);
+            }
+            });
+            });
+            $('.updateList').on('click', function (e) {
+            var id = $(this).attr('data-ktgId');
+            console.log(id);
+            var sId = "kitapId=" + id;
+            console.log(sId);
+            var customId2 = id + "books2";
+
+            // Send the serialized data to the server using AJAX
+            $.ajax({
+            type: "POST",
+            url: "/Profil/UpdateList",
+            data:sId,
+            success: function (response) {
+
+            if ($("#"+customId2).hasClass("black")) {
+            // Siyahsa, kırmızıya dönüştür
+            $("#" + customId2).removeClass("black").addClass("red");
+            } else {
+            // Kırmızıysa, siyah yap
+            $("#" + customId2).removeClass("red").addClass("black");
+            }
+
+            },
+            error: function (xhr, status, error) {
+            // Handle errors, if any
+            console.log(error);
+            }
+            });
+            });
+
+            $('.removeList').on('click', function (e) {
+            var id = $(this).attr('data-ktgId');
+            console.log(id);
+            var sId = "kitapId=" + id;
+            console.log(sId);
+            var customId1 = id + "books1";
+            // Send the serialized data to the server using AJAX
+            $.ajax({
+            type: "POST",
+            url: "/Profil/UpdateList",
+            data: sId,
+            success: function (response) {
+            if ($("#" + customId1).hasClass("red")) {
+            // Siyahsa, kırmızıya dönüştür
+            $("#" + customId1).removeClass("red").addClass("black");
+            } else {
+            // Kırmızıysa, siyah yap
+            $("#" + customId2).removeClass("black").addClass("red");
+            }
+            },
+            error: function (xhr, status, error) {
+            // Handle errors, if any
+            console.log(error);
+            }
+            });
+            });
+
+            });
+</script>

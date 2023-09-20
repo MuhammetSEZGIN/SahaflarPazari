@@ -1,0 +1,895 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SahaflarPazariModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Adres">
+          <Key>
+            <PropertyRef Name="AdresId" />
+          </Key>
+          <Property Name="AdresId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciId" Type="int" Nullable="false" />
+          <Property Name="AdresAdi" Type="varchar" MaxLength="255" />
+          <Property Name="Sehir" Type="varchar" MaxLength="255" />
+          <Property Name="Ilce" Type="varchar" MaxLength="255" />
+          <Property Name="Mahalle" Type="varchar" MaxLength="255" />
+          <Property Name="PostaKodu" Type="varchar" MaxLength="10" />
+          <Property Name="AdresAlani" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="AlisverisSepeti">
+          <Key>
+            <PropertyRef Name="SepetId" />
+          </Key>
+          <Property Name="SepetId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciId" Type="int" Nullable="false" />
+          <Property Name="KitapId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IstekListesi">
+          <Key>
+            <PropertyRef Name="ListeId" />
+          </Key>
+          <Property Name="KullaniciId" Type="int" Nullable="false" />
+          <Property Name="KitapId" Type="int" />
+          <Property Name="ListeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Kitap">
+          <Key>
+            <PropertyRef Name="KitapId" />
+          </Key>
+          <Property Name="KitapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SaticiId" Type="int" Nullable="false" />
+          <Property Name="KategoriId" Type="int" Nullable="false" />
+          <Property Name="Fiyat" Type="int" Nullable="false" />
+          <Property Name="KitapAdi" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Detay" Type="varchar" MaxLength="1000" />
+          <Property Name="EklenmeTarihi" Type="datetime" />
+          <Property Name="YayineviId" Type="int" />
+          <Property Name="Yazar" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="KitapKategorileri">
+          <Key>
+            <PropertyRef Name="KategoriId" />
+          </Key>
+          <Property Name="KategoriId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KategoriAdi" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="KitapResimleri">
+          <Key>
+            <PropertyRef Name="ResimId" />
+          </Key>
+          <Property Name="ResimId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KitapId" Type="int" Nullable="false" />
+          <Property Name="DataYolu" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Kullanici">
+          <Key>
+            <PropertyRef Name="KullaniciId" />
+          </Key>
+          <Property Name="KullaniciId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciAdi" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Sifre" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="KullaniciBilgileri">
+          <Key>
+            <PropertyRef Name="KullaniciId" />
+          </Key>
+          <Property Name="KullaniciId" Type="int" Nullable="false" />
+          <Property Name="Ad" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Soyad" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Telefon" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="Eposta" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Roller">
+          <Key>
+            <PropertyRef Name="RolId" />
+          </Key>
+          <Property Name="RolId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciId" Type="int" Nullable="false" />
+          <Property Name="RolAdi" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sikayet">
+          <Key>
+            <PropertyRef Name="SikayetId" />
+          </Key>
+          <Property Name="SikayetId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KitapId" Type="int" Nullable="false" />
+          <Property Name="KullaniciId" Type="int" Nullable="false" />
+          <Property Name="SikayetIcerigi" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Tarih" Type="date" />
+        </EntityType>
+        <EntityType Name="Siparisler">
+          <Key>
+            <PropertyRef Name="SiparisId" />
+          </Key>
+          <Property Name="SiparisId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciId" Type="int" Nullable="false" />
+          <Property Name="KitapId" Type="int" Nullable="false" />
+          <Property Name="Adres" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="SiparisTarihi" Type="datetime" Nullable="false" />
+          <Property Name="SiparisDurumu" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Yayinevi">
+          <Key>
+            <PropertyRef Name="YayineviID" />
+          </Key>
+          <Property Name="YayineviID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="YayineviAdi" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Adres__Kullanici__0B5CAFEA">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="Adres" Type="Self.Adres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Adres">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Alisveris__Kitap__4589517F">
+          <End Role="Kitap" Type="Self.Kitap" Multiplicity="1" />
+          <End Role="AlisverisSepeti" Type="Self.AlisverisSepeti" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="AlisverisSepeti">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Alisveris__Kulla__467D75B8">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="AlisverisSepeti" Type="Self.AlisverisSepeti" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="AlisverisSepeti">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__IstekList__Kulla__0F624AF8">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="IstekListesi" Type="Self.IstekListesi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="IstekListesi">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kitap__KategoriI__7755B73D">
+          <End Role="KitapKategorileri" Type="Self.KitapKategorileri" Multiplicity="1" />
+          <End Role="Kitap" Type="Self.Kitap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KitapKategorileri">
+              <PropertyRef Name="KategoriId" />
+            </Principal>
+            <Dependent Role="Kitap">
+              <PropertyRef Name="KategoriId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kitap__SaticiId__76619304">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="Kitap" Type="Self.Kitap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Kitap">
+              <PropertyRef Name="SaticiId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kitap__YayineviI__7849DB76">
+          <End Role="Yayinevi" Type="Self.Yayinevi" Multiplicity="0..1" />
+          <End Role="Kitap" Type="Self.Kitap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Yayinevi">
+              <PropertyRef Name="YayineviID" />
+            </Principal>
+            <Dependent Role="Kitap">
+              <PropertyRef Name="YayineviId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kullanici__Epost__4D94879B">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="KullaniciBilgileri" Type="Self.KullaniciBilgileri" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="KullaniciBilgileri">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Roller__Kullanic__1D7B6025">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="Roller" Type="Self.Roller" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Roller">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Sikayet__KitapId__55BFB948">
+          <End Role="Kitap" Type="Self.Kitap" Multiplicity="1" />
+          <End Role="Sikayet" Type="Self.Sikayet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="Sikayet">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Sikayet__Kullani__54CB950F">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="Sikayet" Type="Self.Sikayet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Sikayet">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Siparisle__Kitap__3EDC53F0">
+          <End Role="Kitap" Type="Self.Kitap" Multiplicity="1" />
+          <End Role="Siparisler" Type="Self.Siparisler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="Siparisler">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Siparisle__Kulla__3DE82FB7">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="Siparisler" Type="Self.Siparisler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Siparisler">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SahaflarPazariModelStoreContainer">
+          <EntitySet Name="Adres" EntityType="Self.Adres" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AlisverisSepeti" EntityType="Self.AlisverisSepeti" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IstekListesi" EntityType="Self.IstekListesi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kitap" EntityType="Self.Kitap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KitapKategorileri" EntityType="Self.KitapKategorileri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KitapResimleri" EntityType="Self.KitapResimleri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kullanici" EntityType="Self.Kullanici" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KullaniciBilgileri" EntityType="Self.KullaniciBilgileri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roller" EntityType="Self.Roller" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sikayet" EntityType="Self.Sikayet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Siparisler" EntityType="Self.Siparisler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Yayinevi" EntityType="Self.Yayinevi" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Adres__Kullanici__0B5CAFEA" Association="Self.FK__Adres__Kullanici__0B5CAFEA">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Adres" EntitySet="Adres" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Alisveris__Kitap__4589517F" Association="Self.FK__Alisveris__Kitap__4589517F">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="AlisverisSepeti" EntitySet="AlisverisSepeti" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Alisveris__Kulla__467D75B8" Association="Self.FK__Alisveris__Kulla__467D75B8">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="AlisverisSepeti" EntitySet="AlisverisSepeti" />
+          </AssociationSet>
+          <AssociationSet Name="FK__IstekList__Kulla__0F624AF8" Association="Self.FK__IstekList__Kulla__0F624AF8">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="IstekListesi" EntitySet="IstekListesi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kitap__KategoriI__7755B73D" Association="Self.FK__Kitap__KategoriI__7755B73D">
+            <End Role="KitapKategorileri" EntitySet="KitapKategorileri" />
+            <End Role="Kitap" EntitySet="Kitap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kitap__SaticiId__76619304" Association="Self.FK__Kitap__SaticiId__76619304">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Kitap" EntitySet="Kitap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kitap__YayineviI__7849DB76" Association="Self.FK__Kitap__YayineviI__7849DB76">
+            <End Role="Yayinevi" EntitySet="Yayinevi" />
+            <End Role="Kitap" EntitySet="Kitap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kullanici__Epost__4D94879B" Association="Self.FK__Kullanici__Epost__4D94879B">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="KullaniciBilgileri" EntitySet="KullaniciBilgileri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Roller__Kullanic__1D7B6025" Association="Self.FK__Roller__Kullanic__1D7B6025">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Roller" EntitySet="Roller" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Sikayet__KitapId__55BFB948" Association="Self.FK__Sikayet__KitapId__55BFB948">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="Sikayet" EntitySet="Sikayet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Sikayet__Kullani__54CB950F" Association="Self.FK__Sikayet__Kullani__54CB950F">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Sikayet" EntitySet="Sikayet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Siparisle__Kitap__3EDC53F0" Association="Self.FK__Siparisle__Kitap__3EDC53F0">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="Siparisler" EntitySet="Siparisler" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Siparisle__Kulla__3DE82FB7" Association="Self.FK__Siparisle__Kulla__3DE82FB7">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Siparisler" EntitySet="Siparisler" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SahaflarPazariModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="KitapKategorileri">
+          <Key>
+            <PropertyRef Name="KategoriId" />
+          </Key>
+          <Property Name="KategoriId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KategoriAdi" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__Kitap__KategoriI__3B75D760" FromRole="KitapKategorileri" ToRole="Kitap" />
+        </EntityType>
+        <EntityType Name="KitapResimleri">
+          <Key>
+            <PropertyRef Name="ResimId" />
+          </Key>
+          <Property Name="ResimId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KitapId" Type="Int32" Nullable="false" />
+          <Property Name="DataYolu" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__KitapResi__Kitap__534D60F1" FromRole="KitapResimleri" ToRole="Kitap" />
+        </EntityType>
+        <EntityType Name="Kullanici">
+          <Key>
+            <PropertyRef Name="KullaniciId" />
+          </Key>
+          <Property Name="KullaniciId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciAdi" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sifre" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="KullaniciBilgileri" Relationship="Self.FK__Kullanici__Epost__4D94879B" FromRole="Kullanici" ToRole="KullaniciBilgileri" />
+          <NavigationProperty Name="IstekListesi" Relationship="SahaflarPazariModel.FK__IstekList__Kulla__0F624AF8" FromRole="Kullanici" ToRole="IstekListesi" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__Kitap__SaticiId__3A81B327" FromRole="Kullanici" ToRole="Kitap" />
+          <NavigationProperty Name="Adres" Relationship="SahaflarPazariModel.FK__Adres__Kullanici__0B5CAFEA" FromRole="Kullanici" ToRole="Adres" />
+          <NavigationProperty Name="Roller" Relationship="SahaflarPazariModel.FK__Roller__Kullanic__1D7B6025" FromRole="Kullanici" ToRole="Roller" />
+          <NavigationProperty Name="Siparisler" Relationship="SahaflarPazariModel.FK__Siparisle__Kulla__3DE82FB7" FromRole="Kullanici" ToRole="Siparisler" />
+          <NavigationProperty Name="AlisverisSepeti" Relationship="SahaflarPazariModel.FK__Alisveris__Kulla__467D75B8" FromRole="Kullanici" ToRole="AlisverisSepeti" />
+          <NavigationProperty Name="Sikayet" Relationship="SahaflarPazariModel.FK__Sikayet__Kullani__54CB950F" FromRole="Kullanici" ToRole="Sikayet" />
+        </EntityType>
+        <EntityType Name="KullaniciBilgileri">
+          <Key>
+            <PropertyRef Name="KullaniciId" />
+          </Key>
+          <Property Name="KullaniciId" Type="Int32" Nullable="false" />
+          <Property Name="Ad" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Soyad" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Telefon" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Eposta" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Kullanici" Relationship="Self.FK__Kullanici__Epost__4D94879B" FromRole="KullaniciBilgileri" ToRole="Kullanici" />
+        </EntityType>
+        <Association Name="FK__Kullanici__Epost__4D94879B">
+          <End Role="Kullanici" Type="Self.Kullanici" Multiplicity="1" />
+          <End Role="KullaniciBilgileri" Type="Self.KullaniciBilgileri" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="KullaniciBilgileri">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SahaflarPazariEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="KitapKategorileri" EntityType="Self.KitapKategorileri" />
+          <EntitySet Name="KitapResimleri" EntityType="Self.KitapResimleri" />
+          <EntitySet Name="Kullanici" EntityType="Self.Kullanici" />
+          <EntitySet Name="KullaniciBilgileri" EntityType="Self.KullaniciBilgileri" />
+          <AssociationSet Name="FK__Kullanici__Epost__4D94879B" Association="Self.FK__Kullanici__Epost__4D94879B">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="KullaniciBilgileri" EntitySet="KullaniciBilgileri" />
+          </AssociationSet>
+          <EntitySet Name="IstekListesi" EntityType="SahaflarPazariModel.IstekListesi" />
+          <AssociationSet Name="FK__IstekList__Kulla__0F624AF8" Association="SahaflarPazariModel.FK__IstekList__Kulla__0F624AF8">
+            <End EntitySet="Kullanici" Role="Kullanici" />
+            <End EntitySet="IstekListesi" Role="IstekListesi" />
+          </AssociationSet>
+          <EntitySet Name="Yayinevi" EntityType="SahaflarPazariModel.Yayinevi" />
+          <EntitySet Name="Kitap" EntityType="SahaflarPazariModel.Kitap" />
+          <AssociationSet Name="FK__IstekList__Kitap__10566F31" Association="SahaflarPazariModel.FK__IstekList__Kitap__10566F31">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="IstekListesi" EntitySet="IstekListesi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kitap__KategoriI__3B75D760" Association="SahaflarPazariModel.FK__Kitap__KategoriI__3B75D760">
+            <End Role="KitapKategorileri" EntitySet="KitapKategorileri" />
+            <End Role="Kitap" EntitySet="Kitap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kitap__SaticiId__3A81B327" Association="SahaflarPazariModel.FK__Kitap__SaticiId__3A81B327">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Kitap" EntitySet="Kitap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kitap__YayineviI__625A9A57" Association="SahaflarPazariModel.FK__Kitap__YayineviI__625A9A57">
+            <End Role="Yayinevi" EntitySet="Yayinevi" />
+            <End Role="Kitap" EntitySet="Kitap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KitapResi__Kitap__534D60F1" Association="SahaflarPazariModel.FK__KitapResi__Kitap__534D60F1">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="KitapResimleri" EntitySet="KitapResimleri" />
+          </AssociationSet>
+          <EntitySet Name="Adres" EntityType="SahaflarPazariModel.Adres" />
+          <AssociationSet Name="FK__Adres__Kullanici__0B5CAFEA" Association="SahaflarPazariModel.FK__Adres__Kullanici__0B5CAFEA">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Adres" EntitySet="Adres" />
+          </AssociationSet>
+          <EntitySet Name="Roller" EntityType="SahaflarPazariModel.Roller" />
+          <AssociationSet Name="FK__Roller__Kullanic__1D7B6025" Association="SahaflarPazariModel.FK__Roller__Kullanic__1D7B6025">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Roller" EntitySet="Roller" />
+          </AssociationSet>
+          <EntitySet Name="Siparisler" EntityType="SahaflarPazariModel.Siparisler" />
+          <AssociationSet Name="FK__Siparisle__Kitap__3EDC53F0" Association="SahaflarPazariModel.FK__Siparisle__Kitap__3EDC53F0">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="Siparisler" EntitySet="Siparisler" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Siparisle__Kulla__3DE82FB7" Association="SahaflarPazariModel.FK__Siparisle__Kulla__3DE82FB7">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Siparisler" EntitySet="Siparisler" />
+          </AssociationSet>
+          <EntitySet Name="AlisverisSepeti" EntityType="SahaflarPazariModel.AlisverisSepeti" />
+          <AssociationSet Name="FK__Alisveris__Kitap__4589517F" Association="SahaflarPazariModel.FK__Alisveris__Kitap__4589517F">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="AlisverisSepeti" EntitySet="AlisverisSepeti" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Alisveris__Kulla__467D75B8" Association="SahaflarPazariModel.FK__Alisveris__Kulla__467D75B8">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="AlisverisSepeti" EntitySet="AlisverisSepeti" />
+          </AssociationSet>
+          <EntitySet Name="Sikayet" EntityType="SahaflarPazariModel.Sikayet" />
+          <AssociationSet Name="FK__Sikayet__KitapId__55BFB948" Association="SahaflarPazariModel.FK__Sikayet__KitapId__55BFB948">
+            <End Role="Kitap" EntitySet="Kitap" />
+            <End Role="Sikayet" EntitySet="Sikayet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Sikayet__Kullani__54CB950F" Association="SahaflarPazariModel.FK__Sikayet__Kullani__54CB950F">
+            <End Role="Kullanici" EntitySet="Kullanici" />
+            <End Role="Sikayet" EntitySet="Sikayet" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="IstekListesi">
+          <Key>
+            <PropertyRef Name="ListeId" />
+          </Key>
+          <Property Name="KullaniciId" Nullable="false" Type="Int32" />
+          <Property Name="KitapId" Type="Int32" />
+          <Property Name="ListeId" Nullable="false" annotation:StoreGeneratedPattern="Identity" Type="Int32" />
+          <NavigationProperty Name="Kullanici" Relationship="SahaflarPazariModel.FK__IstekList__Kulla__0F624AF8" FromRole="IstekListesi" ToRole="Kullanici" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__IstekList__Kitap__10566F31" FromRole="IstekListesi" ToRole="Kitap" />
+        </EntityType>
+        <Association Name="FK__IstekList__Kulla__0F624AF8">
+          <End Type="SahaflarPazariModel.Kullanici" Multiplicity="1" Role="Kullanici" />
+          <End Type="SahaflarPazariModel.IstekListesi" Multiplicity="*" Role="IstekListesi" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="IstekListesi">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Yayinevi">
+          <Key>
+            <PropertyRef Name="YayineviID" />
+          </Key>
+          <Property Name="YayineviID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="YayineviAdi" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__Kitap__YayineviI__625A9A57" FromRole="Yayinevi" ToRole="Kitap" />
+        </EntityType>
+        <EntityType Name="Kitap">
+          <Key>
+            <PropertyRef Name="KitapId" />
+          </Key>
+          <Property Name="KitapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SaticiId" Type="Int32" Nullable="false" />
+          <Property Name="KategoriId" Type="Int32" Nullable="false" />
+          <Property Name="Fiyat" Type="Int32" Nullable="false" />
+          <Property Name="KitapAdi" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Detay" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="EklenmeTarihi" Type="DateTime" Precision="3" />
+          <Property Name="YayineviId" Type="Int32" />
+          <NavigationProperty Name="IstekListesi" Relationship="SahaflarPazariModel.FK__IstekList__Kitap__10566F31" FromRole="Kitap" ToRole="IstekListesi" />
+          <NavigationProperty Name="KitapKategorileri" Relationship="SahaflarPazariModel.FK__Kitap__KategoriI__3B75D760" FromRole="Kitap" ToRole="KitapKategorileri" />
+          <NavigationProperty Name="Kullanici" Relationship="SahaflarPazariModel.FK__Kitap__SaticiId__3A81B327" FromRole="Kitap" ToRole="Kullanici" />
+          <NavigationProperty Name="Yayinevi" Relationship="SahaflarPazariModel.FK__Kitap__YayineviI__625A9A57" FromRole="Kitap" ToRole="Yayinevi" />
+          <NavigationProperty Name="KitapResimleri" Relationship="SahaflarPazariModel.FK__KitapResi__Kitap__534D60F1" FromRole="Kitap" ToRole="KitapResimleri" />
+          <Property Name="Yazar" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Siparisler" Relationship="SahaflarPazariModel.FK__Siparisle__Kitap__3EDC53F0" FromRole="Kitap" ToRole="Siparisler" />
+          <NavigationProperty Name="AlisverisSepeti" Relationship="SahaflarPazariModel.FK__Alisveris__Kitap__4589517F" FromRole="Kitap" ToRole="AlisverisSepeti" />
+          <NavigationProperty Name="Sikayet" Relationship="SahaflarPazariModel.FK__Sikayet__KitapId__55BFB948" FromRole="Kitap" ToRole="Sikayet" />
+        </EntityType>
+        <Association Name="FK__IstekList__Kitap__10566F31">
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="0..1" />
+          <End Type="SahaflarPazariModel.IstekListesi" Role="IstekListesi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="IstekListesi">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kitap__KategoriI__3B75D760">
+          <End Type="SahaflarPazariModel.KitapKategorileri" Role="KitapKategorileri" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KitapKategorileri">
+              <PropertyRef Name="KategoriId" />
+            </Principal>
+            <Dependent Role="Kitap">
+              <PropertyRef Name="KategoriId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kitap__SaticiId__3A81B327">
+          <End Type="SahaflarPazariModel.Kullanici" Role="Kullanici" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Kitap">
+              <PropertyRef Name="SaticiId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kitap__YayineviI__625A9A57">
+          <End Type="SahaflarPazariModel.Yayinevi" Role="Yayinevi" Multiplicity="0..1" />
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Yayinevi">
+              <PropertyRef Name="YayineviID" />
+            </Principal>
+            <Dependent Role="Kitap">
+              <PropertyRef Name="YayineviId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KitapResi__Kitap__534D60F1">
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.KitapResimleri" Role="KitapResimleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="KitapResimleri">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Adres">
+          <Key>
+            <PropertyRef Name="AdresId" />
+          </Key>
+          <Property Name="AdresId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciId" Type="Int32" Nullable="false" />
+          <Property Name="AdresAdi" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Sehir" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Ilce" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Mahalle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="PostaKodu" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AdresAlani" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Kullanici" Relationship="SahaflarPazariModel.FK__Adres__Kullanici__0B5CAFEA" FromRole="Adres" ToRole="Kullanici" />
+        </EntityType>
+        <Association Name="FK__Adres__Kullanici__0B5CAFEA">
+          <End Type="SahaflarPazariModel.Kullanici" Role="Kullanici" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Adres" Role="Adres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Adres">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Roller">
+          <Key>
+            <PropertyRef Name="RolId" />
+          </Key>
+          <Property Name="RolId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciId" Type="Int32" Nullable="false" />
+          <Property Name="RolAdi" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Kullanici" Relationship="SahaflarPazariModel.FK__Roller__Kullanic__1D7B6025" FromRole="Roller" ToRole="Kullanici" />
+        </EntityType>
+        <Association Name="FK__Roller__Kullanic__1D7B6025">
+          <End Type="SahaflarPazariModel.Kullanici" Role="Kullanici" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Roller" Role="Roller" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Roller">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Siparisler">
+          <Key>
+            <PropertyRef Name="SiparisId" />
+          </Key>
+          <Property Name="SiparisId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciId" Type="Int32" Nullable="false" />
+          <Property Name="KitapId" Type="Int32" Nullable="false" />
+          <Property Name="Adres" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="SiparisTarihi" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SiparisDurumu" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__Siparisle__Kitap__3EDC53F0" FromRole="Siparisler" ToRole="Kitap" />
+          <NavigationProperty Name="Kullanici" Relationship="SahaflarPazariModel.FK__Siparisle__Kulla__3DE82FB7" FromRole="Siparisler" ToRole="Kullanici" />
+        </EntityType>
+        <Association Name="FK__Siparisle__Kitap__3EDC53F0">
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Siparisler" Role="Siparisler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="Siparisler">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Siparisle__Kulla__3DE82FB7">
+          <End Type="SahaflarPazariModel.Kullanici" Role="Kullanici" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Siparisler" Role="Siparisler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Siparisler">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AlisverisSepeti">
+          <Key>
+            <PropertyRef Name="SepetId" />
+          </Key>
+          <Property Name="SepetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciId" Type="Int32" Nullable="false" />
+          <Property Name="KitapId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__Alisveris__Kitap__4589517F" FromRole="AlisverisSepeti" ToRole="Kitap" />
+          <NavigationProperty Name="Kullanici" Relationship="SahaflarPazariModel.FK__Alisveris__Kulla__467D75B8" FromRole="AlisverisSepeti" ToRole="Kullanici" />
+        </EntityType>
+        <Association Name="FK__Alisveris__Kitap__4589517F">
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.AlisverisSepeti" Role="AlisverisSepeti" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="AlisverisSepeti">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Alisveris__Kulla__467D75B8">
+          <End Type="SahaflarPazariModel.Kullanici" Role="Kullanici" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.AlisverisSepeti" Role="AlisverisSepeti" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="AlisverisSepeti">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Sikayet">
+          <Key>
+            <PropertyRef Name="SikayetId" />
+          </Key>
+          <Property Name="SikayetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KitapId" Type="Int32" Nullable="false" />
+          <Property Name="KullaniciId" Type="Int32" Nullable="false" />
+          <Property Name="SikayetIcerigi" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Kitap" Relationship="SahaflarPazariModel.FK__Sikayet__KitapId__55BFB948" FromRole="Sikayet" ToRole="Kitap" />
+          <NavigationProperty Name="Kullanici" Relationship="SahaflarPazariModel.FK__Sikayet__Kullani__54CB950F" FromRole="Sikayet" ToRole="Kullanici" />
+          <Property Name="Tarih" Type="DateTime" Precision="0" />
+        </EntityType>
+        <Association Name="FK__Sikayet__KitapId__55BFB948">
+          <End Type="SahaflarPazariModel.Kitap" Role="Kitap" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Sikayet" Role="Sikayet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kitap">
+              <PropertyRef Name="KitapId" />
+            </Principal>
+            <Dependent Role="Sikayet">
+              <PropertyRef Name="KitapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Sikayet__Kullani__54CB950F">
+          <End Type="SahaflarPazariModel.Kullanici" Role="Kullanici" Multiplicity="1" />
+          <End Type="SahaflarPazariModel.Sikayet" Role="Sikayet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanici">
+              <PropertyRef Name="KullaniciId" />
+            </Principal>
+            <Dependent Role="Sikayet">
+              <PropertyRef Name="KullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SahaflarPazariModelStoreContainer" CdmEntityContainer="SahaflarPazariEntities">
+          <EntitySetMapping Name="KitapKategorileri">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.KitapKategorileri">
+              <MappingFragment StoreEntitySet="KitapKategorileri">
+                <ScalarProperty Name="KategoriId" ColumnName="KategoriId" />
+                <ScalarProperty Name="KategoriAdi" ColumnName="KategoriAdi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KitapResimleri">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.KitapResimleri">
+              <MappingFragment StoreEntitySet="KitapResimleri">
+                <ScalarProperty Name="ResimId" ColumnName="ResimId" />
+                <ScalarProperty Name="KitapId" ColumnName="KitapId" />
+                <ScalarProperty Name="DataYolu" ColumnName="DataYolu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kullanici">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.Kullanici">
+              <MappingFragment StoreEntitySet="Kullanici">
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+                <ScalarProperty Name="KullaniciAdi" ColumnName="KullaniciAdi" />
+                <ScalarProperty Name="Sifre" ColumnName="Sifre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KullaniciBilgileri">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.KullaniciBilgileri">
+              <MappingFragment StoreEntitySet="KullaniciBilgileri">
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="Soyad" ColumnName="Soyad" />
+                <ScalarProperty Name="Telefon" ColumnName="Telefon" />
+                <ScalarProperty Name="Eposta" ColumnName="Eposta" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IstekListesi">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.IstekListesi">
+              <MappingFragment StoreEntitySet="IstekListesi">
+                <ScalarProperty Name="ListeId" ColumnName="ListeId" />
+                <ScalarProperty Name="KitapId" ColumnName="KitapId" />
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Yayinevi">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.Yayinevi">
+              <MappingFragment StoreEntitySet="Yayinevi">
+                <ScalarProperty Name="YayineviAdi" ColumnName="YayineviAdi" />
+                <ScalarProperty Name="YayineviID" ColumnName="YayineviID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kitap">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.Kitap">
+              <MappingFragment StoreEntitySet="Kitap">
+                <ScalarProperty Name="Yazar" ColumnName="Yazar" />
+                <ScalarProperty Name="YayineviId" ColumnName="YayineviId" />
+                <ScalarProperty Name="EklenmeTarihi" ColumnName="EklenmeTarihi" />
+                <ScalarProperty Name="Detay" ColumnName="Detay" />
+                <ScalarProperty Name="KitapAdi" ColumnName="KitapAdi" />
+                <ScalarProperty Name="Fiyat" ColumnName="Fiyat" />
+                <ScalarProperty Name="KategoriId" ColumnName="KategoriId" />
+                <ScalarProperty Name="SaticiId" ColumnName="SaticiId" />
+                <ScalarProperty Name="KitapId" ColumnName="KitapId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Adres">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.Adres">
+              <MappingFragment StoreEntitySet="Adres">
+                <ScalarProperty Name="AdresAlani" ColumnName="AdresAlani" />
+                <ScalarProperty Name="PostaKodu" ColumnName="PostaKodu" />
+                <ScalarProperty Name="Mahalle" ColumnName="Mahalle" />
+                <ScalarProperty Name="Ilce" ColumnName="Ilce" />
+                <ScalarProperty Name="Sehir" ColumnName="Sehir" />
+                <ScalarProperty Name="AdresAdi" ColumnName="AdresAdi" />
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+                <ScalarProperty Name="AdresId" ColumnName="AdresId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roller">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.Roller">
+              <MappingFragment StoreEntitySet="Roller">
+                <ScalarProperty Name="RolAdi" ColumnName="RolAdi" />
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+                <ScalarProperty Name="RolId" ColumnName="RolId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Siparisler">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.Siparisler">
+              <MappingFragment StoreEntitySet="Siparisler">
+                <ScalarProperty Name="SiparisDurumu" ColumnName="SiparisDurumu" />
+                <ScalarProperty Name="SiparisTarihi" ColumnName="SiparisTarihi" />
+                <ScalarProperty Name="Adres" ColumnName="Adres" />
+                <ScalarProperty Name="KitapId" ColumnName="KitapId" />
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+                <ScalarProperty Name="SiparisId" ColumnName="SiparisId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AlisverisSepeti">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.AlisverisSepeti">
+              <MappingFragment StoreEntitySet="AlisverisSepeti">
+                <ScalarProperty Name="KitapId" ColumnName="KitapId" />
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+                <ScalarProperty Name="SepetId" ColumnName="SepetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sikayet">
+            <EntityTypeMapping TypeName="SahaflarPazariModel.Sikayet">
+              <MappingFragment StoreEntitySet="Sikayet">
+                <ScalarProperty Name="Tarih" ColumnName="Tarih" />
+                <ScalarProperty Name="SikayetIcerigi" ColumnName="SikayetIcerigi" />
+                <ScalarProperty Name="KullaniciId" ColumnName="KullaniciId" />
+                <ScalarProperty Name="KitapId" ColumnName="KitapId" />
+                <ScalarProperty Name="SikayetId" ColumnName="SikayetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

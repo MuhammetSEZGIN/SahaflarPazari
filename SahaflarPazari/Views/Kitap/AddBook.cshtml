@@ -1,0 +1,145 @@
+﻿
+@using SahaflarPazari.Models;
+@model List<KitapKategorileri>
+@{
+    ViewBag.Title = "AddBook";
+}
+
+<div class="container rounded bg-white mt-5 mb-5 ">
+    <div class="row">
+
+        <div class="col-md-5 border-right detailcontainer">
+            <div class="p-3 py-5">
+                <form id="imageUploadForm" method="post">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profil Ayarları</h4>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><label class="labels">Kitap Adı</label><input type="text" class="form-control" name="KitapAdi"></div>
+
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label>Kategori</label>
+                            <select class="form-select-list" id="KategoriID" name="KategoriId">
+                                @foreach (var kategori in Model)
+                                {
+                                    <option value="@kategori.KategoriId">@kategori.KategoriAdi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Yayınevi</label>
+                            <select class="form-select-list" id="KategoriID" name="YayineviId">
+                                @foreach (var yayinevi in ViewBag.yayinevi as List<Yayinevi>)
+                                {
+                                    <option value="@yayinevi.YayineviID">@yayinevi.YayineviAdi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-12"><label class="labels">Detay</label><textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Detay"></textarea></div>
+                        <div class="col-md-6"><label class="labels">Yazar</label><input type="text" class="form-control" name="Yazar"></div>
+                    </div>
+                    <div class="row mt-3">
+
+                        <div class="col-md-4"><label class="labels">Kitap Fiyatı</label><input type="text" class="form-control" name="Fiyat"></div>
+                        <input type="file" name="file" id="file" accept=".jpg, .jpeg, .png" />
+                    </div>
+                    <div class="row mt-3">
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Kaydet</button></div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<script src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script src="~/Content/js/bootstrap.min.js"></script>
+<script>
+    $('#imageUploadForm').submit(function (e) {
+        // Gerekli alanları kontrol et
+        var kitapAdi = $('#KitapAdi').val();
+        var kategoriId = $('#KategoriId').val();
+        var yayineviId = $('#YayineviId').val();
+        var detay = $('#Detay').val();
+        var yazar = $('#Yazar').val();
+        var fiyat = $('#Fiyat').val();
+        var file = $('#file').val();
+
+        // Formdaki herhangi bir alan boşsa submit işlemi engellenir
+        if (kitapAdi === "" || kategoriId === "" || yayineviId === "" || detay === "" || yazar === "" || fiyat === "" || file === "") {
+            alert('Lütfen tüm alanları doldurun.');
+            e.preventDefault();
+        }
+
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/Kitap/AddBook',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.succes) 
+                    alert(response.message);
+
+                    //(".toast-body>p").html = succes.message;
+                    //$('.toast').toast('show');
+                    //setTimeout(function () {
+                    //    myToast.hide();
+                    //}, 3000);
+                                
+            },
+            error: function () {
+                $('#message').html('<span style="color: red;">Resim yükleme sırasında bir hata oluştu.</span>');
+            }
+        });
+    });
+</script>
+
+
+<style>
+    .detailcontainer {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+        max-width: 500px; /* Limit the width of the form */
+        margin: 0 auto; /* Center the form horizontally */
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    .form-select-list {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    .profile-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+    }
+</style>

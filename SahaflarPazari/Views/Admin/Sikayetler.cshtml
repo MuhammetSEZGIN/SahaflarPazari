@@ -1,0 +1,43 @@
+﻿@using SahaflarPazari.Models;
+@model List<Sikayet>
+@{
+    ViewBag.Title = "Sikayetler";
+}
+
+<section class="blog spad">
+    <div class="container">
+        <div class="row">
+            @foreach (var k in Model)
+            {
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <!-- Her blog öğesi için sütun başlangıcı -->
+
+                    <div class="blog__item">
+                        <div class="blog__item__pic">
+                            <img src="../Content/img/Kitap_Resimleri/@k.Kitap.KitapResimleri.ToList()[0].DataYolu" alt="kitap resmi">
+                        </div>
+                        <div class="blog__item__text">
+                            <ul>
+                                <li><i class="fa fa-calendar-o"></i>@k.Tarih</li>
+                            </ul>
+                            <h5>Kitap: @k.Kullanici.KullaniciAdi</h5>
+                            <h5>Sikayet Eden: @k.Kullanici.KullaniciAdi</h5>
+                            <p>@k.SikayetIcerigi </p>
+                            <a href="#!" class="blog__btn deneme" data-ktgid="@k.KitapId">Kitaba Git <span class="arrow_right"></span></a>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div> <!-- Her blog öğesi için sütun sonu -->
+    </div>
+</section>
+
+<script src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script>
+    $('.deneme').on('click', function (e) {
+            e.preventDefault();
+            var id = $(this).data('ktgid');
+            window.location.href = '@Url.Action("Details", "Home")' + '/' + id;
+            });
+</script>

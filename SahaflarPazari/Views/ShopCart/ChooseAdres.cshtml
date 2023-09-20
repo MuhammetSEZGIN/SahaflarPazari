@@ -1,0 +1,134 @@
+﻿@using SahaflarPazari.Models;
+@model List<Adres>
+@{
+    ViewBag.Title = "ChooseAdres";
+}
+
+
+<div class="container" style="  display: flex; justify-content: center; align-items: center;">
+    <div class="card p-3 py-3 mt-3 card-1 text-center">
+        <h4>Teslimat Adresi</h4>
+
+
+        @foreach (var k in Model)
+        {
+            <div class="p-3 card-2">
+                <div class="p-3 card-child">
+                    <div class="d-flex flex-row align-items-center">
+                        <span class="circle">
+                            <i class="fa fa-home"></i>
+                        </span>
+
+                        <div class="d-flex flex-column ms-3">
+                            <h6 class="fw-bold">@k.AdresAdi</h6>
+                            <span>@k.PostaKodu, @k.Sehir, @k.Ilce, @k.Mahalle <br>@k.AdresAlani</span>
+                            <button type="button" data-adrId="@k.AdresId" class="btn btn-info sec">Seç</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+        <div class="p-3 card-child mt-4 py-4">
+            <a href="@Url.Action("Index","Profil")" style="text-decoration:none">
+                <div class="d-flex flex-row align-items-center">
+                    <span class="circle-3">
+                        <i class="fa fa-plus"></i>
+                    </span>
+
+                    <div class="d-flex flex-column ms-3 mt-1">
+                        <h6 class="fw-bold text-primary">Yeni Adres Ekle</h6>
+                    </div>
+
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script src="~/Content/js/bootstrap.min.js"></script>
+<script>
+    $('.sec').on('click', function (e) {
+        var id = $(this).attr('data-adrId');
+         console.log(id);
+
+        var sId = "id=" + id;
+         console.log(sId);
+        
+        $.ajax({
+            type: "POST",
+            url: "/ShopCart/Orders",
+            data: sId,
+            success: function (response) {
+                window.location.replace("Orders");
+            },
+            error: function (xhr, status, error) {
+                // Handle errors, if any
+                console.log(error);
+            }
+        });
+    });
+
+</script>
+
+
+<style>
+
+    .card-1 {
+        width: 400px;
+        border-radius: 18px;
+        border: none;
+    }
+
+    .card-2 {
+        border-radius: 20px;
+    }
+
+
+    .card-child {
+        border: 3px solid blue;
+        border-radius: 16px;
+    }
+
+    .circle {
+        background-color: #ebdffb;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        display: flex;
+        color: #9553ea;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+    }
+
+
+    .circle-2 {
+        background-color: #fbebdf;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        display: flex;
+        color: #ea9253;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+    }
+
+
+    .circle-3 {
+        background-color: blue;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        display: flex;
+        color: #fff;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+    }
+</style>

@@ -1,0 +1,198 @@
+﻿@using SahaflarPazari.Models;
+@model Kullanici
+@{
+    ViewBag.Title = "Adresses";
+}
+
+
+<div class="container ">
+
+    <div class="container rounded bg-white mt-5 mb-5">
+        <div class="row justify-content-center">
+
+            @for (int i = 0; i < Model.Adres.ToList().Count; i++)
+            {
+                var buttonId = "Button" + Model.Adres.ToList()[i].AdresId;
+                <div class="col-md-5 border-right ">
+                    <div class="adresbuttonContainer">
+                        <div id="adresShowButton" class="btn btn-light btn-custom-width user-info-button updatePlace" data-mdb-ripple-color="dark">
+                            <i class="fa fa-user" style="margin-right: 8px;"></i>
+                            @Model.Adres.ToList()[i].AdresAdi
+                        </div>
+                        <div class="mt-5 text-center"><a href="#" data-toggle="modal" data-target="#exampleModal" data-adresId="@Model.Adres.ToList()[i].AdresId" data-adresAdi="@Model.Adres.ToList()[i].AdresAdi" class="btn btn-danger adresSil">Sil</a></div>
+                    </div>
+
+                    <div class="justify-content-center align-items-center AdressInfoDisplay " id="nearForm" style="display: none; ">
+                        <form id="@Model.Adres.ToList()[i].AdresId" method="post" class="adressForm" sdata="@Model.Adres.ToList()[i].AdresId">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-right">Profil Ayarları</h4>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12"><label class="labels">Adres Adı</label><input type="text" class="form-control" value="@Model.Adres.ToList()[i].AdresAdi" name="AdresAdi"></div>
+                                <div class="col-md-12"><label class="labels">Adres Alanı</label><input type="text" class="form-control" value="@Model.Adres.ToList()[i].AdresAlani" name="AdresAlani"></div>
+                                <div class="col-md-12"><label class="labels">Sehir</label><input type="text" name="Sehir" value="@Model.Adres.ToList()[i].Sehir" class="form-control"></div>
+                                <div class="col-md-12"><label class="labels">Ilce</label><input type="text" class="form-control" value="@Model.Adres.ToList()[i].Ilce" name="Ilce"></div>
+                                <div class="col-md-12"><label class="labels">Mahalle</label><input type="text" class="form-control" value="@Model.Adres.ToList()[i].Mahalle" name="Mahalle"></div>
+                                <div class="col-md-12"><label class="labels">Posta Kodu</label><input type="text" class="form-control" value="@Model.Adres.ToList()[i].PostaKodu" name="PostaKodu"></div>
+                                <span id="AdressError" style="color: red; display: none;"></span>
+                            </div>
+                            <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Kaydet</button></div>
+                        </form>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+
+
+    </div>
+</div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">ADRES SIL</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="mesaj"></p>
+                    <p class="hata"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary bolgeSil">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Additional div to display user information -->
+
+<script src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script src="~/Content/js/bootstrap.min.js"></script>
+<script>
+
+    $(".adresSil").click(
+        function () {
+           
+            $(".modal-body>p.hata").html = "";
+            var adres = $(this).attr("data-adresAdi");
+            $(".modal-body>p.mesaj").html(adres + " silinsin mi?");
+            var adresID = $(this).attr("data-adresId");
+            $(".bolgeSil").data("bolgeId", adresID);
+        }
+    );
+
+    $(".bolgeSil").click(
+        function () {
+            var id = $(this).data("bolgeId");
+            dataSend = "id=" + id;
+            //alert(id);
+            $.ajax({
+                type: "POST",
+                url: "/Profil/DeleteAdress",
+                data: dataSend,
+                success: function (response) {
+                    // Handle the response from the server (if needed)
+                    if (response.success) {
+                        console.log(response.message);
+                        window.location.replace("/Profil/Index");
+                    } else {
+                        console.log(response.errorMessage);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors, if any
+                    alert("bir hata oluştu");
+                }
+            });
+        }
+    );
+
+    $(document).ready(function () {
+        let isAdressInfoVisible = false;
+
+        $(".updatePlace").on("click", function () {
+
+            var hiddenInfoDiv = $(this).closest(".col-md-5").find(".AdressInfoDisplay");
+            var formItself = $(this).closest(".col-md-5").find(".adressForm");
+            var deneme = formItself.attr("sdata");
+
+            console.log(deneme);
+
+            if (isAdressInfoVisible) {
+
+
+                // Diğer "hiddenInfo" divlerini gizle
+                (hiddenInfoDiv).show();
+                isAdressInfoVisible = false;
+
+            } else {
+
+
+                // Diğer "hiddenInfo" divlerini gizle
+                (hiddenInfoDiv).hide();
+                isAdressInfoVisible = true;
+
+            }
+
+            $("#" + deneme).submit(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                var formData = $(this).serialize();
+                formData += "&AdresId=" + deneme;
+                console.log(formData);
+
+                // Send the serialized data to the server using AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/Profil/UpdateAdressInfo",
+                    data: formData,
+                    success: function (response) {
+                        // Handle the response from the server (if needed)
+                        if (response.success) {
+                            alert(response.message);
+                        } else {
+                            console.log(response.errorMessage);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors, if any
+                        alert("bir hata oluştu");
+                    }
+                });
+            });
+        });
+
+
+
+
+    });
+
+</script>
+
+<style>
+    .adresbuttonContainer {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+        max-width: 500px; /* Limit the width of the form */
+        margin: 0 auto; /* Center the form horizontally */
+    }
+
+    .AdressInfoDisplay {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+        max-width: 500px; /* Limit the width of the form */
+        margin: 0 auto; /* Center the form horizontally */
+    }
+</style>
