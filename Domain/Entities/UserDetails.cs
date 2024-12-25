@@ -6,29 +6,29 @@ namespace Domain.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("KullaniciBilgileri")]
-    public partial class KullaniciBilgileri
+    [Table("UserDetails")]
+    public partial class UserDetails
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int KullaniciId { get; set; }
+        public int UserId { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string Ad { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string Soyad { get; set; }
+        public string LastName { get; set; }
 
         [Required]
         [StringLength(11)]
-        public string Telefon { get; set; }
+        public string Phone { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string Eposta { get; set; }
+        public string Email { get; set; }
 
-        public virtual Kullanici Kullanici { get; set; }
+        public virtual User User { get; set; }
     }
 }

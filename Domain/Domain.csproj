@@ -50,27 +50,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Adres.cs" />
-    <Compile Include="Entities\AlisverisSepeti.cs" />
-    <Compile Include="Entities\IstekListesi.cs" />
-    <Compile Include="Entities\Kitap.cs" />
-    <Compile Include="Entities\KitapKategorileri.cs" />
-    <Compile Include="Entities\KitapResimleri.cs" />
-    <Compile Include="Entities\Kullanici.cs" />
-    <Compile Include="Entities\KullaniciBilgileri.cs" />
-    <Compile Include="Entities\Roller.cs" />
-    <Compile Include="Entities\Sikayet.cs" />
-    <Compile Include="Entities\Siparisler.cs" />
-    <Compile Include="Entities\Yayinevi.cs" />
+    <Compile Include="Entities\Address.cs" />
+    <Compile Include="Entities\Book.cs" />
+    <Compile Include="Entities\BookCategory.cs" />
+    <Compile Include="Entities\BookImage.cs" />
+    <Compile Include="Entities\Complaint.cs" />
+    <Compile Include="Entities\Order.cs" />
+    <Compile Include="Entities\Publisher.cs" />
+    <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\ShoppingCart.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserDetails.cs" />
+    <Compile Include="Entities\Wishlist.cs" />
+    <Compile Include="Interfaces\IBookRepository.cs" />
     <Compile Include="Interfaces\IBookService.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BookService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

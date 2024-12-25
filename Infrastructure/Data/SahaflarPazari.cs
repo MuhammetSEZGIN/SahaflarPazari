@@ -13,168 +13,168 @@ namespace Domain.Data
         {
         }
 
-        public virtual DbSet<Adres> Adres { get; set; }
-        public virtual DbSet<AlisverisSepeti> AlisverisSepetis { get; set; }
-        public virtual DbSet<IstekListesi> IstekListesis { get; set; }
-        public virtual DbSet<Kitap> Kitaps { get; set; }
-        public virtual DbSet<KitapKategorileri> KitapKategorileris { get; set; }
-        public virtual DbSet<KitapResimleri> KitapResimleris { get; set; }
-        public virtual DbSet<Kullanici> Kullanicis { get; set; }
-        public virtual DbSet<KullaniciBilgileri> KullaniciBilgileris { get; set; }
-        public virtual DbSet<Roller> Rollers { get; set; }
-        public virtual DbSet<Sikayet> Sikayets { get; set; }
-        public virtual DbSet<Siparisler> Siparislers { get; set; }
-        public virtual DbSet<Yayinevi> Yayinevis { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<BookCategory> BookCategories { get; set; }
+        public virtual DbSet<BookImage> BookImages { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserDetails> UserDetails { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Complaint> Complaints { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Publisher> Publishers { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Adres>()
-                .Property(e => e.AdresAdi)
+            modelBuilder.Entity<Address>()
+                .Property(e => e.AddressName)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Adres>()
-                .Property(e => e.Sehir)
+            modelBuilder.Entity<Address>()
+                .Property(e => e.City)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Adres>()
-                .Property(e => e.Ilce)
+            modelBuilder.Entity<Address>()
+                .Property(e => e.District)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Adres>()
-                .Property(e => e.Mahalle)
+            modelBuilder.Entity<Address>()
+                .Property(e => e.Neighborhood)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Adres>()
-                .Property(e => e.PostaKodu)
+            modelBuilder.Entity<Address>()
+                .Property(e => e.PostalCode)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Adres>()
-                .Property(e => e.AdresAlani)
+            modelBuilder.Entity<Address>()
+                .Property(e => e.AddressArea)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Kitap>()
-                .Property(e => e.KitapAdi)
+            modelBuilder.Entity<Book>()
+                .Property(e => e.BookName)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Kitap>()
-                .Property(e => e.Detay)
+            modelBuilder.Entity<Book>()
+                .Property(e => e.Description)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Kitap>()
-                .Property(e => e.Yazar)
+            modelBuilder.Entity<Book>()
+                .Property(e => e.Author)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Kitap>()
-                .HasMany(e => e.AlisverisSepetis)
-                .WithRequired(e => e.Kitap)
+            modelBuilder.Entity<Book>()
+                .HasMany(e => e.ShoppingCarts)
+                .WithRequired(e => e.Book)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kitap>()
-                .HasMany(e => e.KitapResimleris)
-                .WithRequired(e => e.Kitap)
+            modelBuilder.Entity<Book>()
+                .HasMany(e => e.BookImages)
+                .WithRequired(e => e.Book)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kitap>()
-                .HasMany(e => e.Sikayets)
-                .WithRequired(e => e.Kitap)
+            modelBuilder.Entity<Book>()
+                .HasMany(e => e.Complaints)
+                .WithRequired(e => e.Book)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kitap>()
-                .HasMany(e => e.Siparislers)
-                .WithRequired(e => e.Kitap)
+            modelBuilder.Entity<Book>()
+                .HasMany(e => e.Orders)
+                .WithRequired(e => e.Book)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<KitapKategorileri>()
-                .Property(e => e.KategoriAdi)
+            modelBuilder.Entity<BookCategory>()
+                .Property(e => e.CategoryName)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<KitapKategorileri>()
-                .HasMany(e => e.Kitaps)
-                .WithRequired(e => e.KitapKategorileri)
+            modelBuilder.Entity<BookCategory>()
+                .HasMany(e => e.Books)
+                .WithRequired(e => e.BookCategory)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<KitapResimleri>()
-                .Property(e => e.DataYolu)
+            modelBuilder.Entity<BookImage>()
+                .Property(e => e.ImagePath)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .Property(e => e.KullaniciAdi)
+            modelBuilder.Entity<User>()
+                .Property(e => e.UserName)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .Property(e => e.Sifre)
+            modelBuilder.Entity<User>()
+                .Property(e => e.Password)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasMany(e => e.Adres)
-                .WithRequired(e => e.Kullanici)
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Addresses)
+                .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasMany(e => e.AlisverisSepetis)
-                .WithRequired(e => e.Kullanici)
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.ShoppingCarts)
+                .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasMany(e => e.IstekListesis)
-                .WithRequired(e => e.Kullanici)
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Wishlists)
+                .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasMany(e => e.Kitaps)
-                .WithRequired(e => e.Kullanici)
-                .HasForeignKey(e => e.SaticiId)
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Books)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.SellerId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasOptional(e => e.KullaniciBilgileri)
-                .WithRequired(e => e.Kullanici);
+            modelBuilder.Entity<User>()
+                .HasOptional(e => e.UserDetails)
+                .WithRequired(e => e.User);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasMany(e => e.Rollers)
-                .WithRequired(e => e.Kullanici)
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Roles)
+                .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasMany(e => e.Sikayets)
-                .WithRequired(e => e.Kullanici)
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Complaints)
+                .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Kullanici>()
-                .HasMany(e => e.Siparislers)
-                .WithRequired(e => e.Kullanici)
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Orders)
+                .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<KullaniciBilgileri>()
-                .Property(e => e.Ad)
+            modelBuilder.Entity<UserDetails>()
+                .Property(e => e.FirstName)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<KullaniciBilgileri>()
-                .Property(e => e.Soyad)
+            modelBuilder.Entity<UserDetails>()
+                .Property(e => e.LastName)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<KullaniciBilgileri>()
-                .Property(e => e.Telefon)
+            modelBuilder.Entity<UserDetails>()
+                .Property(e => e.Phone)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<KullaniciBilgileri>()
-                .Property(e => e.Eposta)
+            modelBuilder.Entity<UserDetails>()
+                .Property(e => e.Email)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Roller>()
-                .Property(e => e.RolAdi)
+            modelBuilder.Entity<Role>()
+                .Property(e => e.RoleName)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Sikayet>()
-                .Property(e => e.SikayetIcerigi)
+            modelBuilder.Entity<Complaint>()
+                .Property(e => e.ComplaintContent)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Siparisler>()
-                .Property(e => e.Adres)
+            modelBuilder.Entity<Order>()
+                .Property(e => e.Address)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Siparisler>()
-                .Property(e => e.SiparisDurumu)
+            modelBuilder.Entity<Order>()
+                .Property(e => e.OrderStatus)
                 .IsUnicode(false);
         }
     }

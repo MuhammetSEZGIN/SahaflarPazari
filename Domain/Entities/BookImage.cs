@@ -6,18 +6,18 @@ namespace Domain.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("KitapResimleri")]
-    public partial class KitapResimleri
+    [Table("BookImage")]
+    public partial class BookImage
     {
         [Key]
-        public int ResimId { get; set; }
+        public int ImageId { get; set; }
 
-        public int KitapId { get; set; }
+        public int BookId { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string DataYolu { get; set; }
+        public string ImagePath { get; set; }
 
-        public virtual Kitap Kitap { get; set; }
+        public virtual Book Book { get; set; }
     }
 }

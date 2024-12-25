@@ -6,18 +6,18 @@ namespace Domain.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Roller")]
-    public partial class Roller
+    [Table("Role")]
+    public partial class Role
     {
         [Key]
-        public int RolId { get; set; }
+        public int RoleId { get; set; }
 
-        public int KullaniciId { get; set; }
+        public int UserId { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string RolAdi { get; set; }
+        [StringLength(255)]
+        public string RoleName { get; set; }
 
-        public virtual Kullanici Kullanici { get; set; }
+        public virtual User User { get; set; }
     }
 }
