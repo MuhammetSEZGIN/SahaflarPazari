@@ -1,135 +1,204 @@
-﻿using SahaflarPazari.Models;
-using SahaflarPazari.Security;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Net;
+﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-using System.Web.UI;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using SahaflarPazari.Models;
+using Infrastructure.Identity;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SahaflarPazari.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        // Identity managers from OWIN context
+        private ApplicationUserManager _userManager =>
+            HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
+        private ApplicationSignInManager _signInManager =>
+            HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+
+        private IAuthenticationManager _authManager =>
+            HttpContext.GetOwinContext().Authentication;
+
+        /// <summary>
+        /// Logs out user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         public ActionResult Logout()
         {
-            // Oturumu sonlandırma
-            FormsAuthentication.SignOut();
-
-            // Çıkış işleminden sonra ana sayfaya yönlendirme
+            _authManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Login", "Account");
         }
 
-        // GET: Account
+        /// <summary>
+        /// GET: Login
+        /// </summary>
         [HttpGet]
         [AllowAnonymous]
         public ActionResult Login()
         {
-
             return View();
         }
 
+        /// <summary>
+        /// POST: Login
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(Kullanici kullanici)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(LoginModel loginModel)
         {
-
-            try
+            if (!ModelState.IsValid)
             {
-                SahaflarPazariEntities db = new SahaflarPazariEntities();
-                Kullanici kb = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == kullanici.KullaniciAdi && x.Sifre == kullanici.Sifre);
-                if (kb == null)
-                {
-                    ViewBag.hata = "Kullanıcı Adı veya Sifre Hatalı";
-                    return View();
-                }
-                else
-                {
-
-                    FormsAuthentication.SetAuthCookie(kullanici.KullaniciAdi,false);                   
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            catch (Exception ex)
-
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, ex.Message);
+                  return Json(new
+                    {
+                        success = false,
+                        message = "Validation failed",
+                    });
+                
             }
 
+            var result = await _signInManager.PasswordSignInAsync(
+                loginModel.userName,
+                loginModel.password,
+                isPersistent: false,   
+                shouldLockout: false
+            );
 
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    {
+                        
+                        return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
+                        
+                    }
+                case SignInStatus.Failure:
+                default:
+                    {
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Invalid login attempt. Please check your username/password."
+                        });
+                    }
+            }
         }
 
+        /// <summary>
+        /// GET: Register
+        /// </summary>
         [AllowAnonymous]
+        [HttpGet]
         public ActionResult Register()
         {
             return View();
         }
 
+        /// <summary>
+        /// POST: Register
+        /// Creates a new Identity user, signs them in, or shows errors
+        /// </summary>
+
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Register(RegisterModel registerModel)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterModel registerModel)
         {
-
-
-            using (ValidateControl VControl = new ValidateControl())
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    String Control = VControl.PasswordControl(registerModel.Sifre);
-                    if (Control==String.Empty) 
+                var fieldErrors = GetFieldErrors(ModelState);
+                    return Json(new
                     {
-                        SahaflarPazariEntities model = new SahaflarPazariEntities();
-                        if (VControl.UserNameControl(registerModel.KullaniciAdi, model))
-                        {
-                            Kullanici kullanici = new Kullanici();
-                            KullaniciBilgileri kullaniciBilgileri = new KullaniciBilgileri();
-
-                            kullanici.KullaniciAdi = registerModel.KullaniciAdi;
-                            kullanici.Sifre = registerModel.Sifre;
-                            kullaniciBilgileri.Ad = registerModel.Ad;
-                            kullaniciBilgileri.Soyad = registerModel.Soyad;
-                            kullaniciBilgileri.Eposta = registerModel.Eposta;
-                            kullaniciBilgileri.Telefon = registerModel.Telefon;
-                            kullanici.KullaniciBilgileri = kullaniciBilgileri;
-
-                            Roller roller = new Roller();
-                            roller.KullaniciId = kullanici.KullaniciId;
-                            roller.RolAdi = "User";    
-                            model.Roller.AddOrUpdate(roller);
-                            model.Kullanici.AddOrUpdate(kullanici);
-                           
-                            model.SaveChanges();
-                            return RedirectToAction("Login", "Account");
-                        }
-                        else
-                        {
-                            return Json(new{ success = false, type = "kullaniciAdi", message = "Kullanici Adi Zaten Alınmış " }, JsonRequestBehavior.AllowGet);
-                        }
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = Control, JsonRequestBehavior.AllowGet });
-
-                    }
-
-
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception for debugging purposes (optional).
-                    // You can use a logging framework like log4net, NLog, or Serilog for this purpose.
-
-
-                    // Return HTTP Bad Request (400) with an error message.
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, ex.Message);
-                }
+                        success = false,
+                        fieldErrors,
+                        message = "Validation failed"
+                    });
             }
+            var newUser = new ApplicationUser
+            {
+                UserName = registerModel.UserName,
+                Email = registerModel.Email,
+                PhoneNumber = registerModel.Phone,
+                FirstName= registerModel.FirstName,
+                LastName= registerModel.LastName
+            };
+
+            var result = await _userManager.CreateAsync(newUser, registerModel.Password);
+            if (result.Succeeded)
+            {
+
+                //System.Diagnostics.Debug.WriteLine(newUser.Id);
+                //System.Diagnostics.Debug.WriteLine("\n"+ newUser);
+
+                var roleResult = await _userManager.AddToRoleAsync(newUser.Id, "User");
+                if (!roleResult.Succeeded)
+                {
+                    foreach (var error in roleResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error);
+                    }
+                    var roleErrors = GetFieldErrors(ModelState);
+                    return Json(new
+                    {
+                        success = false,
+                        fieldErrors= roleErrors,
+                        message = "Failed to add user to role."
+                    });
+                }
+                await _signInManager.SignInAsync(newUser, isPersistent: false, rememberBrowser: false);
+
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl = Url.Action("Index", "Home")
+                });
+                
+            }
+       
+            foreach (var err in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, err);
+            }
+            var identityErrors = GetFieldErrors(ModelState);
+          
+            return Json(new
+            {
+                success = false,
+                fieldErrors= identityErrors,
+                message = "Failed to register user."
+            });
+           
         }
-     
+
+
+        /// <summary>
+        /// Example helper to build a dictionary of field -> list of error messages
+        /// so the client can display them next to each field
+        /// </summary>
+        private Dictionary<string, List<string>> GetFieldErrors(ModelStateDictionary modelState)
+        {
+            var errorsDict = new Dictionary<string, List<string>>();
+            
+            foreach (var states in modelState)
+            {
+                // key usually matches the property, e.g. "UserName", "Email", etc.
+                var state = states.Value;
+                var stateKey= states.Key;
+                var fieldErrors = state.Errors.Select(e => e.ErrorMessage).
+                    Where(msg => !string.IsNullOrEmpty(msg)).
+                    ToList();
+
+                if (fieldErrors.Any())
+                    errorsDict[states.Key] = fieldErrors;
+            }
+            return errorsDict;
+        }
     }
 }

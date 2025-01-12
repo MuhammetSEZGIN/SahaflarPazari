@@ -2,11 +2,12 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using Domain.Entities;
-using System.Linq;
+using Infrastructure.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace Domain.Data
+namespace Infrastructure.Data
 {
-    public partial class SahaflarPazari : DbContext
+    public class SahaflarPazari : IdentityDbContext<ApplicationUser>
     {
         public SahaflarPazari()
             : base("name=SahaflarPazari")
@@ -19,15 +20,14 @@ namespace Domain.Data
         public virtual DbSet<Book> Books { get; set; }
         public virtual DbSet<BookCategory> BookCategories { get; set; }
         public virtual DbSet<BookImage> BookImages { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserDetails> UserDetails { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Complaint> Complaints { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Publisher> Publishers { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Address>()
                 .Property(e => e.AddressName)
                 .IsUnicode(false);
@@ -97,73 +97,41 @@ namespace Domain.Data
                 .Property(e => e.ImagePath)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<User>()
-                .Property(e => e.UserName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<User>()
-                .Property(e => e.Password)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.Addresses)
-                .WithRequired(e => e.User)
+                .WithRequired()
+                .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.ShoppingCarts)
-                .WithRequired(e => e.User)
+                .WithRequired()
+                .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.Wishlists)
-                .WithRequired(e => e.User)
+                .WithRequired()
+                .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.Books)
-                .WithRequired(e => e.User)
+                .WithRequired()
                 .HasForeignKey(e => e.SellerId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<User>()
-                .HasOptional(e => e.UserDetails)
-                .WithRequired(e => e.User);
-
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.Roles)
-                .WithRequired(e => e.User)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.Complaints)
-                .WithRequired(e => e.User)
+                .WithRequired()
+                .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.Orders)
-                .WithRequired(e => e.User)
+                .WithRequired()
+                .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<UserDetails>()
-                .Property(e => e.FirstName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<UserDetails>()
-                .Property(e => e.LastName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<UserDetails>()
-                .Property(e => e.Phone)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<UserDetails>()
-                .Property(e => e.Email)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Role>()
-                .Property(e => e.RoleName)
-                .IsUnicode(false);
 
             modelBuilder.Entity<Complaint>()
                 .Property(e => e.ComplaintContent)

@@ -9,7 +9,7 @@ namespace Domain.Entities
     [Table("Wishlist")]
     public partial class Wishlist
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public int? BookId { get; set; }
 
@@ -18,6 +18,5 @@ namespace Domain.Entities
 
         public virtual Book Book { get; set; }
 
-        public virtual User User { get; set; }
     }
 }

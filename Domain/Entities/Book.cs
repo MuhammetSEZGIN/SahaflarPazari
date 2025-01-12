@@ -21,8 +21,8 @@ namespace Domain.Entities
 
         public int BookId { get; set; }
 
-        public int SellerId { get; set; }
-
+        public string SellerId { get; set; }
+         
         public int CategoryId { get; set; }
 
         public int Price { get; set; }
@@ -48,8 +48,6 @@ namespace Domain.Entities
         public virtual ICollection<Wishlist> Wishlists { get; set; }
 
         public virtual BookCategory BookCategory { get; set; }
-
-        public virtual User User { get; set; }
 
         public virtual Publisher Publisher { get; set; }
 

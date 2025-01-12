@@ -14,14 +14,14 @@
                     <form id="loginFrom" method="post">
                         <div class="form-group">
                             <label for="inputFirstName">Ad</label>
-                            <input type="text" class="form-control" id="inputFirstName" name="KullaniciAdi" required>
+                            <input type="text" class="form-control" id="inputFirstName" name="userName" required>
                             <div class="invalid-feedback">
                                 Lütfen geçerli bir ad giriniz.
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputPassword">Şifre</label>
-                            <input type="password" class="form-control" id="inputPassword" name="Sifre" required>
+                            <input type="password" class="form-control" id="inputPassword" name="password" required>
                             <div class="feedback">
                                 @ViewBag.hata
                             </div>
@@ -51,7 +51,7 @@
 <script>
     $(document).ready(function () {
         $("#loginForm").submit(function (event) {
-           // event.preventDefault(); // Prevent the default form submission
+            event.preventDefault(); // Prevent the default form submission
 
             // Serialize the form data
             var formData = $(this).serialize();

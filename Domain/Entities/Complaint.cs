@@ -13,7 +13,7 @@ namespace Domain.Entities
 
         public int BookId { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -23,6 +23,5 @@ namespace Domain.Entities
 
         public virtual Book Book { get; set; }
 
-        public virtual User User { get; set; }
     }
 }

@@ -1,11 +1,12 @@
-﻿using SahaflarPazari.Models;
-using SahaflarPazari.Security;
+﻿using Domain.Interfaces;
+using Infrastructure.Identity;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using SahaflarPazari.Models;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -14,78 +15,68 @@ namespace SahaflarPazari.Controllers
 {
     public class HomeController : Controller
     {
-        private SahaflarPazariEntities db = new SahaflarPazariEntities();
-        public string GetCurrentUserName()
+
+        private readonly IUnitOfWork _unitOfWork;
+       
+
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            if (HttpContext.Request.IsAuthenticated)
-            {
-
-                HttpCookie authCookie = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName];
-
-                if (authCookie != null && !string.IsNullOrEmpty(authCookie.Value))
-                {
-
-                    FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-                    if (authTicket != null && !authTicket.Expired)
-                    {
-
-                        return authTicket.Name;
-
-                    }
-                }
-            }
-
-            return String.Empty;
+            _unitOfWork = unitOfWork;
         }
 
 
         [HttpGet]
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
-            
-            
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                Kitap kitap = db.Kitap.Find(id);
-                if (kitap == null)
-                {
-                    return HttpNotFound();
-                }
-                return View(kitap);
-            
+
+
+            if (!id.HasValue)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var book = await _unitOfWork.Books.GetByIdAsync(id.Value);
+
+            if (book == null)
+            {
+                return HttpNotFound();
+            }
+            return View(book);
+
         }
-      
+
         // GET: Kitap
         [HttpGet]
-        public ActionResult Index()
+
+        public async Task<ActionResult> Index()
         {
-            string username= GetCurrentUserName();
-            List<Kitap> kitap = db.Kitap.ToList();
-            List<Kitap> enSonEklenenler = db.Kitap.OrderByDescending(k => k.EklenmeTarihi).ToList();
-            MainPageModel model = new MainPageModel();
-            if (username != String.Empty)
+            string username = User.Identity.GetUserName();
+
+            var allBooks = await _unitOfWork.Books.GetAllAsync();
+            var latestBooks = allBooks
+                .OrderByDescending(k => k.AddedDate)  // EF property => Book.AddedDate
+                .ToList();
+
+            var model = new MainPageModel
             {
-                Kullanici kullanici = new Kullanici();               
-                kullanici =db.Kullanici.FirstOrDefault(x=>x.KullaniciAdi==username);
-               
-                List<int?> istekListesiKitaplari = db.IstekListesi.Where(x => x.KullaniciId == kullanici.KullaniciId).Select(x => x.KitapId).ToList();              
-                model.istekListesiKitaplari=istekListesiKitaplari;
-                model.kitap= kitap;
-                model.enSonEklenenler = enSonEklenenler;
-                Session["ItemCount"] = db.AlisverisSepeti.Count(x => x.KullaniciId == kullanici.KullaniciId);
-                return View(model);
-            }
-            else
+                books = allBooks.ToList(),
+                lastAddedBooks = latestBooks
+            };
+
+            if (!string.IsNullOrEmpty(username))
             {
-                model.kitap = kitap;
-                model.enSonEklenenler= enSonEklenenler;
-                return View(model); 
+                var userId = User.Identity.GetUserId(); 
+                var wishListBooks = await _unitOfWork.Wishlists.FindAsync(x => x.UserId == userId);
+                model.wishListBooks = wishListBooks.Select(x => x.BookId ?? 0).ToList();
+
+                // Alışveriş sepetindeki ürün sayısı
+                var cartItems = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == userId);
+                Session["ItemCount"] = cartItems.Count();
+                
             }
+
+            return View(model);
         }
 
-      
+
 
     }
 }

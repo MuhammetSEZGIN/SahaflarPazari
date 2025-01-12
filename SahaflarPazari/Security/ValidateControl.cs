@@ -10,7 +10,7 @@ using System.Web.UI;
 
 namespace SahaflarPazari.Security
 {
-    public class ValidateControl : Controller
+    public class ValidateControl
     {
         public string PasswordControl(string sifre)
         {
@@ -37,6 +37,7 @@ namespace SahaflarPazari.Security
             return string.Empty;
         }
        
+        /*
         public bool UserNameControl(string userName, SahaflarPazariEntities db)
         {
 
@@ -52,6 +53,7 @@ namespace SahaflarPazari.Security
                 
 
         }
+        */
        
     }
 }

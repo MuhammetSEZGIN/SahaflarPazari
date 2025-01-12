@@ -34,13 +34,13 @@
                 </div>
             </div>
             <div class="categories__slider owl-carousel">
-                @foreach (var item in Model.enSonEklenenler)
+                @foreach (var item in Model.lastAddedBooks)
                 {
                     <div class="col-lg-3">
 
                         <div style="position: relative; text-align: center; color: white;">
-                            <a href="#!" id="dataNumber" data-ktgId="@item.KitapId" class="deneme">
-                                <img src="../Content/img/Kitap_Resimleri/@item.KitapResimleri.ToList()[0].DataYolu" alt="Paris">
+                            <a href="#!" id="dataNumber" data-ktgId="@item.CategoryId" class="deneme">
+                                <img src="../Content/img/Kitap_Resimleri/@item.BookImages.ToList()[0].ImagePath" alt="Paris">
     
                             </a>
                         </div>
@@ -65,47 +65,47 @@
             </div>
         </div>
         <div class="row featured__filter">
-            @foreach (var k in Model.kitap)
+            @foreach (var k in Model.books)
             {
                 <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
                     <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="../Content/img/Kitap_Resimleri/@k.KitapResimleri.ToList()[0].DataYolu">
+                        <div class="featured__item__pic set-bg" data-setbg="../Content/img/Kitap_Resimleri/@k.BookImages.ToList()[0].ImagePath">
 
                             <ul class="featured__item__pic__hover">
 
 
                                 @if (User.Identity.IsAuthenticated)
                                 {
-                                    var id = k.KitapId;
+                                    var id = k.BookId;
                                     var customId1 = id + "books1";
                                     var customId2 = id + "books2";
-                                    if (Model.istekListesiKitaplari.Count != 0 && Model.istekListesiKitaplari.Contains(k.KitapId))
+                                    if (Model.wishListBooks.Count != 0 && Model.wishListBooks.Contains(k.BookId))
                                     {
 
 
-                                        <li><a href="#!" data-ktgId="@k.KitapId" class="removeList"><i id="@customId1" class="fa fa-heart red "></i></a></li>
+                                        <li><a href="#!" data-ktgId="@k.BookId" class="removeList"><i id="@customId1" class="fa fa-heart red "></i></a></li>
                                     }
                                     else
                                     {
 
-                                        <li><a href="#!" data-ktgId="@k.KitapId" class="updateList"><i id="@customId2" class="fa fa-heart black"></i></a></li>
+                                        <li><a href="#!" data-ktgId="@k.BookId" class="updateList"><i id="@customId2" class="fa fa-heart black"></i></a></li>
 
                                     }
 
                                 }
                                 else
                                 {
-                                    <li><a href="/Account/Login" id="de" data-ktgId="@k.KitapId"><i class="fa fa-heart"></i></a></li>
+                                    <li><a href="/Account/Login" id="de" data-ktgId="@k.BookId"><i class="fa fa-heart"></i></a></li>
                                 }
 
-                                <li><a href="#!" id="dataNumber" data-ktgId="@k.KitapId" class="deneme"><i class="fa fa-info-circle"></i></a></li>
-                                <li><a href="#!" class="addtocart" data-ktgId="@k.KitapId"><i class="fa fa-shopping-cart"></i></a></li>
+                                <li><a href="#!" id="dataNumber" data-ktgId="@k.BookId" class="deneme"><i class="fa fa-info-circle"></i></a></li>
+                                <li><a href="#!" class="addtocart" data-ktgId="@k.BookId"><i class="fa fa-shopping-cart"></i></a></li>
                             </ul>
 
                         </div>
                         <div class="featured__item__text">
-                            <h6>@k.KitapAdi</h6>
-                            <h5>@k.Fiyat</h5>
+                            <h6>@k.BookName</h6>
+                            <h5>@k.Price</h5>
                         </div>
                     </div>
                 </div>

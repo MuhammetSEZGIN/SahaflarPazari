@@ -5,13 +5,12 @@ namespace Domain.Entities
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
-
     public partial class Address
     {
         [Key]
         public int AddressId { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [StringLength(255)]
         public string AddressName { get; set; }
@@ -31,6 +30,5 @@ namespace Domain.Entities
         [StringLength(255)]
         public string AddressArea { get; set; }
 
-        public virtual User User { get; set; }
     }
 }
