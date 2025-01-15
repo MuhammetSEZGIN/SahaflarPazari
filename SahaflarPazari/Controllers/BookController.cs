@@ -157,6 +157,7 @@ namespace SahaflarPazari.Controllers
         // [AddBook POST] -> Kitabı DB'ye kaydeder ve resmi ekler
         // ---------------------------------------------------------------
         [MyAuthorization(Roles = "User")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<ActionResult> AddBook(Book model, HttpPostedFileBase file)
         {
@@ -205,9 +206,16 @@ namespace SahaflarPazari.Controllers
             // Tüm değişiklikleri tek seferde kaydet
             await _unitOfWork.CommitAsync();
 
-            return RedirectToAction("MyBooks", "Kitap");
-            
-            
+            return Json(new 
+            { 
+                success = true, 
+                message = "Kitap Ekleme Başarılı",
+                returnUrl= "/Book/MyBooks"
+
+            }, JsonRequestBehavior.AllowGet);
+
+
+
         }
 
         // ---------------------------------------------------------------

@@ -1,6 +1,6 @@
 ﻿@using SahaflarPazari.Models;
 @{ 
-    var Model = ViewBag.SepetItem as List<AlisverisSepeti>;
+    var Model = ViewBag.SepetItem as List<Domain.Entities.ShoppingCart>;
     var totalItem = ViewBag.Total as int ?;
 }
 
@@ -30,25 +30,25 @@
                             @{ var sum = 0;}
                             @foreach (var k in Model)
                             {
-                                sum += @k.Kitap.Fiyat;
+                                sum += @k.Book.Price;
 
-                                <tr id="@k.SepetId">
+                                <tr id="@k.CartId">
                                     <td class="shoping__cart__item">
 
-                                        <a href="#" data-ktgId="@k.Kitap.KitapId" class="deneme"><img style="max-width: 200px; max-height: 200px; " src="~/Content/img/Kitap_Resimleri/@k.Kitap.KitapResimleri.ToList()[0].DataYolu" alt="kitap resmi"></a>
-                                        <h5>@k.Kitap.KitapAdi</h5>
+                                        <a href="#" data-ktgId="@k.Book.BookId" class="deneme"><img style="max-width: 200px; max-height: 200px; " src="~/Content/img/Kitap_Resimleri/@k.Book.BookImages.ToList()[0].ImagePath" alt="kitap resmi"></a>
+                                        <h5>@k.Book.BookName</h5>
                                     </td>
 
                                     <td>
-                                        @k.Kitap.Kullanici.KullaniciAdi
+                                        @k.
                                     </td>
                                     <td class="shoping__cart__price">
-                                        @k.Kitap.Fiyat
+                                        @k.Book.Price
                                     </td>
 
 
                                     <td class="shoping__cart__item__close">
-                                        <button type="button" class="btn-close" data-ktgprc="@k.Kitap.Fiyat" data-ktgId="@k.SepetId" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-ktgprc="@k.Book.Price" data-ktgId="@k.CartId" aria-label="Close"></button>
                                     </td>
                                 </tr>
 

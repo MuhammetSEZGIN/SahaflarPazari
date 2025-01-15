@@ -97,6 +97,10 @@
     <Compile Include="Migrations\202501101111361_SeedRoles.Designer.cs">
       <DependentUpon>202501101111361_SeedRoles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202501151410514_CategoryAndPublisherInitialAdding.cs" />
+    <Compile Include="Migrations\202501151410514_CategoryAndPublisherInitialAdding.Designer.cs">
+      <DependentUpon>202501151410514_CategoryAndPublisherInitialAdding.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
@@ -130,6 +134,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202501101111361_SeedRoles.resx">
       <DependentUpon>202501101111361_SeedRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202501151410514_CategoryAndPublisherInitialAdding.resx">
+      <DependentUpon>202501151410514_CategoryAndPublisherInitialAdding.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -32,7 +32,7 @@ namespace SahaflarPazari.Controllers
            
             // Sepet itemleri
             var userId = User.Identity.GetUserId();    
-            var sepet = await _unitOfWork.ShoppingCarts.FindAsync(x => x.UserId == userId);
+            var sepet = (await _unitOfWork.ShoppingCarts.FindAsync(x => x.UserId == userId)).ToList();
             if (sepet==null)
             {
                 return Json(new { success = false, message = "Siparis Listesi Boş" }, JsonRequestBehavior.AllowGet);
@@ -205,7 +205,7 @@ namespace SahaflarPazari.Controllers
         public async Task<ActionResult> SoldItems()
         {
             var userId = User.Identity.GetUserId();
-            var orders = await _unitOfWork.Orders.FindAsync(o => o.Book.SellerId == userId);
+            var orders = (await _unitOfWork.Orders.FindAsync(o => o.Book.SellerId == userId)).ToList();
             return View(orders);
         }
 

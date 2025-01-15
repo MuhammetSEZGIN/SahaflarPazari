@@ -17,11 +17,12 @@ namespace SahaflarPazari.Controllers
     {
 
         private readonly IUnitOfWork _unitOfWork;
-       
+       private readonly ApplicationUserManager _userManager;
 
-        public HomeController(IUnitOfWork unitOfWork)
+        public HomeController(IUnitOfWork unitOfWork, ApplicationUserManager userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager= userManager;
         }
 
 
@@ -34,12 +35,22 @@ namespace SahaflarPazari.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             var book = await _unitOfWork.Books.GetByIdAsync(id.Value);
-
             if (book == null)
             {
                 return HttpNotFound();
             }
-            return View(book);
+            var BookViewModel = new BookViewModel
+            {
+                BookImages = (await _unitOfWork.BookImages.FindAsync(b => b.BookId == id.Value)).ToList(),
+                BookName = book.BookName,
+                Price = book.Price,
+                Description = book.Description,
+                BookId = book.BookId,
+                PublisherName = (await _unitOfWork.Publishers.GetByIdAsync(book.PublisherId.Value)).PublisherName,
+                UserName = (await _userManager.FindByIdAsync(book.SellerId)).UserName
+            };
+           
+            return View(BookViewModel);
 
         }
 

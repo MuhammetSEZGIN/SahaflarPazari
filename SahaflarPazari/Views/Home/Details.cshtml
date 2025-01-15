@@ -1,5 +1,4 @@
-﻿@using Domain.Entities;
-@model Book
+﻿@model SahaflarPazari.Models.BookViewModel
 @{
     ViewBag.Title = "Details";
 }
@@ -14,10 +13,10 @@
 
                     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
-                            @for (int i = 0; i < Model.BookImages.ToList().Count; i++)
+                            @for (int i = 0; i < Model.BookImages.Count; i++)
                             {
                                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                                    <img style="width: fit-content; height:fit-content" class="d-block w-100" src="~/Content/img/Kitap_Resimleri/@Model.BookImages.ToList()[i].ImagePath" alt="Slide @(i + 1)">
+                                    <img style="width: fit-content; height:fit-content" class="d-block w-100" src="~/Content/img/Kitap_Resimleri/@Model.BookImages[i].ImagePath" alt="Slide @(i + 1)">
                                 </div>
                             }
                         </div>
@@ -60,8 +59,8 @@
                     <a href="#!" id="flogin" data-ktgId="@Model.BookId" class="primary-btn addtocart">SEPETE EKLE</a>
 
                     <ul>
-                        <li><b>Satıcı</b> <span>@Model.User.UserName</span></li>
-                        <li><b>Yayın Evi</b> <span>@Model.Publisher.PublisherName</span></li>
+                        <li><b>Satıcı</b> <span>@Model.UserName</span></li>
+                        <li><b>Yayın Evi</b> <span>@Model.PublisherName</span></li>
 
                     </ul>
                 </div>
