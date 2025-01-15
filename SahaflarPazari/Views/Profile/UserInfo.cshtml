@@ -27,15 +27,21 @@
                         <h4 class="text-right">Profil Ayarları</h4>
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-6"><label class="labels">Ad</label><input type="text" class="form-control" value="@Model.FirstName" name="Ad"></div>
-                        <div class="col-md-6"><label class="labels">Soyad</label><input type="text" class="form-control" value="@Model.LastName" name="Soyad"></div>
+                        <div class="col-md-6"><label class="labels">Ad</label><input type="text" class="form-control" value="@Model.FirstName" name="FirstName" required></div>
+                        <div class="field-error" id="error-FirstName"></div>
+
+                        <div class="col-md-6"><label class="labels">Soyad</label><input type="text" class="form-control" value="@Model.LastName" name="LastName" required></div>
+                        <div class="field-error" id="error-LastName"></div>
+
                     </div>
                     <div class="row mt-3">
 
 
-                        <div class="col-md-12"><label class="labels">Telefon Numarası</label><input type="text" class="form-control" value="@Model.Phone" name="Telefon"></div>
+                        <div class="col-md-12"><label class="labels">Telefon Numarası</label><input type="text" class="form-control" value="@Model.Phone" name="Phone" required></div>
+                        <div class="field-error" id="error-Phone"></div>
 
-                        <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" value="@Model.Email" name="Eposta"></div>
+                        <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" value="@Model.Email" name="Email" required></div>
+                        <div class="field-error" id="error-Email"></div>
 
                     </div>
                     <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Kaydet</button></div>
@@ -56,15 +62,26 @@
 
             // Serialize the form data
             var formData = $(this).serialize();
-            console.log(formData);
-
             // Send the serialized data to the server using AJAX
             $.ajax({
                 type: "POST",
-                url: "/Profil/UpdateUserInfo",
+                url: "/Profile/UpdateUserInfo",
                 data: formData,
                 success: function (response) {
-                    alert(response.message);
+                    if (response.success)
+                        alert(response.message);
+                    else {
+                        if (response.fieldeErrors) {
+                            $.each(response.fieldeErrors, function (fieldName, errorsArray) {
+                                var combined = errorsArray.join("<br/>");
+                                // e.g. if fieldName == "FirstName", place them in #error-UserName
+                                
+                                var errorId = "#error-" + fieldName;
+                                console.log(combined);
+                                $(errorId).html(combined);
+                            });
+                        }
+                    }
 
                 },
                 error: function (xhr, status, error) {

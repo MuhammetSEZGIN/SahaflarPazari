@@ -82,6 +82,17 @@ namespace SahaflarPazari.Controllers
         [MyAuthorization(Roles = "User,Admin")]
         public async Task<ActionResult> UpdateUserInfo(UserInfoModel userDetails)
         {
+            if (!ModelState.IsValid)
+            {
+                var fieldeErrors = GetFieldErrors(ModelState);
+                return Json(
+                    new
+                    {
+                        success = false,
+                        fieldeErrors,
+                        message = "Update failed"
+                    });
+            }
             var userId= User.Identity.GetUserId();
             var user= _userManager.FindById(userId);
 
@@ -112,19 +123,19 @@ namespace SahaflarPazari.Controllers
 
             if (!ModelState.IsValid) 
             {
-                var fieldeErrors = GetFieldErrors(ModelState);
+                var fieldErrors = GetFieldErrors(ModelState);
                 return Json(
                     new
                     {
                         success= false,
-                        fieldeErrors,
+                        fieldErrors,
                         message = "Update failed"
                     });
             }
 
             // Kullanıcı adı aynı olan degerler kontrolu
-            var duplicateControle= await _userManager.FindByNameAsync(userModel.userName);
-            if(duplicateControle == null)
+            var duplicateControle = await _userManager.FindByNameAsync(userModel.userName);
+            if (duplicateControle != null && duplicateControle.Id != User.Identity.GetUserId())
             {
                 return Json(new
                 {
@@ -149,7 +160,7 @@ namespace SahaflarPazari.Controllers
             dbUser.PasswordHash = hashedPassword;
 
             var updateResult= await _userManager.UpdateAsync(dbUser);
-            if (updateResult.Succeeded)
+            if (!updateResult.Succeeded)
             {
                 return Json(new { success = true, message = "Güncelleme Başarısız" }, JsonRequestBehavior.AllowGet);
 
@@ -215,10 +226,10 @@ namespace SahaflarPazari.Controllers
         // [UpdateAdressInfo] -> Adres güncelleme
         // ------------------------------------------------------------------
         [MyAuthorization(Roles = "User")]
-        public async Task<ActionResult> UpdateAdressInfo(Address addressModel)
+        public async Task<ActionResult> UpdateAddressInfo(AddressViewModel addressModel, int AddressId)
         {
             // Adres var mı?
-            var dbAddress = await _unitOfWork.Addresses.GetByIdAsync(addressModel.AddressId);
+            var dbAddress = await _unitOfWork.Addresses.GetByIdAsync(AddressId);
             if (dbAddress == null)
             {
                 return Json(new { success = false, message = "Adres Bulunamadı" }, JsonRequestBehavior.AllowGet);
@@ -242,7 +253,7 @@ namespace SahaflarPazari.Controllers
         // [DeleteAdress] -> Adres silme
         // ------------------------------------------------------------------
         [MyAuthorization(Roles = "User,Admin")]
-        public async Task<ActionResult> DeleteAdress(int id)
+        public async Task<ActionResult> DeleteAddress(int id)
         {
             var dbAddress = await _unitOfWork.Addresses.GetByIdAsync(id);
             if (dbAddress == null)
@@ -260,17 +271,26 @@ namespace SahaflarPazari.Controllers
         // [AddAdress] -> Yeni Adres ekleme
         // ------------------------------------------------------------------
         [MyAuthorization(Roles = "User,Admin")]
-        public async Task<ActionResult> AddAdress(Address addressModel)
+        public async Task<ActionResult> AddAddress(AddressViewModel addressModel)
         {
-            var user = await _userManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user == null)
+            var userId = User.Identity.GetUserId();
+            if (userId == null)
             {
                 return Json(new { success = false, message = "Kullanıcı Bulunamadı" }, JsonRequestBehavior.AllowGet);
             }
 
             // Adres ekle
-            addressModel.UserId = user.Id;
-            _unitOfWork.Addresses.AddAsync(addressModel);
+            var addressEntity = new Address
+            {
+                UserId = userId,
+                AddressName = addressModel.AddressName,
+                City = addressModel.City,
+                District = addressModel.District,
+                Neighborhood = addressModel.Neighborhood,
+                PostalCode = addressModel.PostalCode,
+                AddressArea = addressModel.AddressArea
+            };
+            _unitOfWork.Addresses.AddAsync(addressEntity);
             await _unitOfWork.CommitAsync();
 
             return Json(new { success = true, message = "Adres Eklendi" }, JsonRequestBehavior.AllowGet);

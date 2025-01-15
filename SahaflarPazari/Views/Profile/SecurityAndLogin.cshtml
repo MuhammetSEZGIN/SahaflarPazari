@@ -3,7 +3,6 @@
     ViewBag.Title = "SecurityAndLogin";
 }
 
-<h2>SecurityAndLogin</h2>
 
 
 <div class="container rounded bg-white mt-5 mb-5 securityContainer">
@@ -15,10 +14,14 @@
                         <h4 class="text-right">Profil Ayarları</h4>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Kullanıcı Adı</label><input type="text" class="form-control" value="@Model.UserName" name="KullaniciAdi"></div>
-                        <div class="col-md-12"><label class="labels">Sifre</label><input id="YeniSifre" type="text" class="form-control" name="Sifre"></div>
-                        <div class="col-md-12"><label class="labels">Sifre Tekrarı</label><input id="SifreTekrari" type="text" class="form-control"></div>
+                        <div class="col-md-12"><label class="labels">Kullanıcı Adı</label><input type="text" class="form-control" value="@Model.UserName" name="UserName"></div>
+                        <div class="field-error" id="error-UserName"></div>
+
+                        <div class="col-md-12"><label class="labels">Sifre</label><input id="YeniSifre" type="password" class="form-control" name="Password"></div>
+                        <div class="field-error" id="error-Password"></div>
+                        <div class="col-md-12"><label class="labels">Sifre Tekrarı</label><input id="SifreTekrari" type="password" class="form-control"></div>
                         <span id="passwordMatchError" style="color: red; display: none;">Şifreler eşleşmiyor.</span>
+
                     </div>
                     <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Kaydet</button></div>
                 </form>
@@ -57,16 +60,21 @@
             // Send the serialized data to the server using AJAX
             $.ajax({
                 type: "POST",
-                url: "/Profil/UpdateLoginInfo",
+                url: "/Profile/UpdateLoginInfo",
                 data: formData,
                 success: function (response) {
                     // Handle the response from the server (if needed)
                     if (response.success) {
                         alert(response.message);
                     } else {
-                        console.log(response.errorMessage);
-                        $("#passwordMatchError").text(response.message);
-                        $("#passwordMatchError").show();
+                        $.each(response.fieldErrors, function (fieldName, errorsArray) {
+                            var combined = errorsArray.join("<br/>");
+                            // e.g. if fieldName == "UserName", place them in #error-UserName
+                                                    
+                            var errorId = "#error-" + fieldName;
+                            $(errorId).html(combined);
+                        });
+                      
                     }
                 },
                 error: function (xhr, status, error) {

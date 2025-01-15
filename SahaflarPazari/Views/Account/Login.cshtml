@@ -1,9 +1,6 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Login";
-
 }
-
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -11,7 +8,8 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Giriş Yap</h5>
-                    <form id="loginFrom" method="post">
+                    <form id="loginForm" method="post">
+                        @Html.AntiForgeryToken()
                         <div class="form-group">
                             <label for="inputFirstName">Ad</label>
                             <input type="text" class="form-control" id="inputFirstName" name="userName" required>
@@ -33,7 +31,6 @@
                             <button type="submit" class="btn btn-primary">Giriş Yap</button>
                             <a href="@Url.Action("Register", "Account")" class="btn btn-link">Kaydol</a>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -56,7 +53,6 @@
             // Serialize the form data
             var formData = $(this).serialize();
 
-            console.log(formData);
             // Send the serialized data to the server using AJAX
             $.ajax({
                 type: "POST",
@@ -65,15 +61,10 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-
-                        console.log(formData);
-                    }
-                    else {
-                        console.log(response.message);
+                        window.location.href = response.redirectUrl;
+                    } else {
                         $(".feedback").html(response.message);
-
                     }
-
                 },
                 error: function (xhr, status, error) {
                     // Handle errors, if any

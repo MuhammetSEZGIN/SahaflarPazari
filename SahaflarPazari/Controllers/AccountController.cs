@@ -75,7 +75,10 @@ namespace SahaflarPazari.Controllers
                 case SignInStatus.Success:
                     {
                         
-                        return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
+                        return Json(new { 
+                            success = true,
+                            redirectUrl = Url.Action("Index", "Home") 
+                        });
                         
                     }
                 case SignInStatus.Failure:

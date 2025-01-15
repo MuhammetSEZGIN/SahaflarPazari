@@ -7,6 +7,10 @@ using Ninject;
 using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
 using SahaflarPazari.Security;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Infrastructure.Identity;
+using Microsoft.Owin.Security;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SahaflarPazari.App_Start.NinjectWebCommon), "Start")]
 namespace SahaflarPazari.App_Start
@@ -43,7 +47,24 @@ namespace SahaflarPazari.App_Start
                  .ToSelf()
                  .InRequestScope(); // web isteği boyunca aynı context
 
-        
+            // identity
+            kernel.Bind<IUserStore<ApplicationUser>>()
+            .To<UserStore<ApplicationUser>>()
+            .InRequestScope()
+            .WithConstructorArgument("context", ctx => ctx.Kernel.Get<Infrastructure.Data.SahaflarPazari>());
+
+            kernel.Bind<ApplicationUserManager>()
+                  .ToSelf()
+                  .InRequestScope();
+
+            kernel.Bind<ApplicationSignInManager>()
+                  .ToSelf()
+                  .InRequestScope();
+
+            kernel.Bind<IAuthenticationManager>()
+                  .ToMethod(ctx => HttpContext.Current.GetOwinContext().Authentication)
+                  .InRequestScope();
+
             // Repositories
             kernel.Bind<IBookImagesRepository>()
                   .To<BookImagesRepository>()

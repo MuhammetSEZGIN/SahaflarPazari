@@ -112,7 +112,6 @@ $(document).ready(function() {
                     window.location.href = response.redirectUrl;
                 } else {
                     // Show errors
-                    console.log(response.fieldErrors);
                     if (response.fieldErrors) {
                         $.each(response.fieldErrors, function(fieldName, errorsArray) {
                             var combined = errorsArray.join("<br/>");

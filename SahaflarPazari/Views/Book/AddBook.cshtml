@@ -15,34 +15,34 @@
                         <h4 class="text-right">Profil Ayarları</h4>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-6"><label class="labels">Kitap Adı</label><input type="text" class="form-control" name="KitapAdi"></div>
+                        <div class="col-md-6"><label class="labels">Kitap Adı</label><input type="text" class="form-control" name="BookName"></div>
 
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-4">
                             <label>Kategori</label>
-                            <select class="form-select-list" id="KategoriID" name="KategoriId">
+                            <select class="form-select-list" id="KategoriID" name="CategoryId">
                                 @foreach (var kategori in Model)
                                 {
-                                    <option value="@kategori.KategoriId">@kategori.KategoriAdi</option>
+                                    <option value="@kategori.CategoryId">@kategori.CategoryName</option>
                                 }
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label>Yayınevi</label>
-                            <select class="form-select-list" id="KategoriID" name="YayineviId">
-                                @foreach (var yayinevi in ViewBag.yayinevi as List<Yayinevi>)
+                            <select class="form-select-list" id="KategoriID" name="PublisherId">
+                                @foreach (var yayinevi in ViewBag.yayinevi as List<Publisher>)
                                 {
-                                    <option value="@yayinevi.YayineviID">@yayinevi.YayineviAdi</option>
+                                    <option value="@yayinevi.PublisherId">@yayinevi.PublisherName</option>
                                 }
                             </select>
                         </div>
-                        <div class="col-md-12"><label class="labels">Detay</label><textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Detay"></textarea></div>
-                        <div class="col-md-6"><label class="labels">Yazar</label><input type="text" class="form-control" name="Yazar"></div>
+                        <div class="col-md-12"><label class="labels">Detay</label><textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Description"></textarea></div>
+                        <div class="col-md-6"><label class="labels">Yazar</label><input type="text" class="form-control" name="Author"></div>
                     </div>
                     <div class="row mt-3">
 
-                        <div class="col-md-4"><label class="labels">Kitap Fiyatı</label><input type="text" class="form-control" name="Fiyat"></div>
+                        <div class="col-md-4"><label class="labels">Kitap Fiyatı</label><input type="text" class="form-control" name="Price"></div>
                         <input type="file" name="file" id="file" accept=".jpg, .jpeg, .png" />
                     </div>
                     <div class="row mt-3">

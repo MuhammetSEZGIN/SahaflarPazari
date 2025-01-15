@@ -1,20 +1,19 @@
-﻿
-<div class="container ">
+﻿<div class="container ">
     <div class="container rounded bg-white mt-5 mb-5">
         <div class="row justify-content-center">      
                 <div class="col-md-5 border-right ">
                     <div class="justify-content-center align-items-center AdressInfoDisplay " id="nearForm">
-                        <form id="addAdressForm" method="post" class="adressForm">
+                        <form id="addAddressForm" method="post" class="adressForm">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h4 class="text-right">Adres Ekle</h4>
                             </div>
                             <div class="row mt-3">
-                                <div class="col-md-12"><label class="labels">Adres Adı</label><input type="text" class="form-control" name="AdresAdi"></div>
-                                <div class="col-md-12"><label class="labels">Adres Alanı</label><input type="text" class="form-control"  name="AdresAlani"></div>
-                                <div class="col-md-12"><label class="labels">Sehir</label><input type="text" name="Sehir"  class="form-control"></div>
-                                <div class="col-md-12"><label class="labels">Ilce</label><input type="text" class="form-control" name="Ilce"></div>
-                                <div class="col-md-12"><label class="labels">Mahalle</label><input type="text" class="form-control"  name="Mahalle"></div>
-                                <div class="col-md-12"><label class="labels">Posta Kodu</label><input type="text" class="form-control"  name="PostaKodu"></div>
+                                <div class="col-md-12"><label class="labels">Adres Adı</label><input type="text" class="form-control" name="AddressName"></div>
+                                <div class="col-md-12"><label class="labels">Adres Alanı</label><input type="text" class="form-control"  name="AddressArea"></div>
+                                <div class="col-md-12"><label class="labels">Sehir</label><input type="text"   class="form-control" name="City"></div>
+                                <div class="col-md-12"><label class="labels">Ilce</label><input type="text" class="form-control" name="District"></div>
+                                <div class="col-md-12"><label class="labels">Mahalle</label><input type="text" class="form-control"  name="Neighborhood"></div>
+                                <div class="col-md-12"><label class="labels">Posta Kodu</label><input type="text" class="form-control"  name="PostalCode"></div>
                                 <span id="AdressError" style="color: red; display: none;"></span>
                             </div>
                             <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Kaydet</button></div>
@@ -27,10 +26,7 @@
 </div>
 <script>
     $(document).ready(function () {
-
-     
-        
-        $("#addAdressForm").submit(function (event) {
+        $("#addAddressForm").submit(function (event) {
             event.preventDefault(); // Prevent the default form submission
 
             // Serialize the form data
@@ -40,11 +36,11 @@
             // Send the serialized data to the server using AJAX
             $.ajax({
                 type: "POST",
-                url: "/Profil/AddAdress",
+                url: "/Profile/AddAddress", // Corrected URL
                 data: formData,
                 success: function (response) {
                     alert(response.message);
-                    window.location.replace("/Profil/Index");
+                    window.location.replace("/Profile/Index");
                 },
                 error: function (xhr, status, error) {
                     // Handle errors, if any
@@ -53,5 +49,4 @@
             });
         });
     });
-
 </script>

@@ -1,11 +1,9 @@
 ﻿
 @using SahaflarPazari.Models;
-@model MyBookPageViewModel;
+@model MyBookPageViewModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+   Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
 <section class="featured spad">
     <div class="container">
         <div class="row">
@@ -69,7 +67,7 @@
                                         <div class="col-md-4">
                                             <label>Kategori</label>
                                             <select class="form-select-list" id="KategoriID" name="KategoriId">
-                                                @foreach (var kategori in Model.Books)
+                                                @foreach (var kategori in Model.Categories)
                                                 {
                                                     <option value="@kategori.CategoryId" @(kategori.CategoryId == k.CategoryId ? "selected" : "")>@kategori.CategoryName</option>
                                                 }
@@ -140,7 +138,7 @@
 
         $('#AddBookButton').on('click', function (e) {
             e.preventDefault();
-            window.location.href = '@Url.Action("AddBook", "Kitap")';
+            window.location.href = '@Url.Action("AddBook", "Book")';
         });
         let isAdressInfoVisible = false;
         $('.updatePlace').on('click', function (e) {
