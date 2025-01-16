@@ -8,17 +8,21 @@ using System.Web.Security;
 using SahaflarPazari.Security;
 using Domain.Interfaces;       // IUnitOfWork
 using Domain.Entities;
-using Microsoft.AspNet.Identity;        // User, ShoppingCart, Order, Address, Book, etc.
+using Microsoft.AspNet.Identity;
+using SahaflarPazari.Models;
+using Infrastructure.Identity;        // User, ShoppingCart, Order, Address, Book, etc.
 
 namespace SahaflarPazari.Controllers
 {
     public class ShopCartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ApplicationUserManager _userManager;
 
-        public ShopCartController(IUnitOfWork unitOfWork)
+        public ShopCartController(IUnitOfWork unitOfWork, ApplicationUserManager userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
 
@@ -31,19 +35,34 @@ namespace SahaflarPazari.Controllers
         {
            
             // Sepet itemleri
-            var userId = User.Identity.GetUserId();    
-            var sepet = (await _unitOfWork.ShoppingCarts.FindAsync(x => x.UserId == userId)).ToList();
-            if (sepet==null)
+            var userId = User.Identity.GetUserId();
+            var shopCart = (await _unitOfWork.ShoppingCarts.FindAsync(x => x.UserId == userId)).ToList();
+            
+            if (shopCart == null)
             {
                 return Json(new { success = false, message = "Siparis Listesi Boş" }, JsonRequestBehavior.AllowGet);
             }
+            var ShopCartViewModel = new List<ShopCartViewModel>();
+            
+            foreach(var item in shopCart)
+            {
+                ShopCartViewModel.Add(new ShopCartViewModel
+                {
+                    CartId = item.CartId,
+                    BookId = item.BookId,
+                    BookName = item.Book.BookName,
+                    SellerName = (await _userManager.FindByIdAsync(item.Book.SellerId)).UserName,
+                    BookPrice = item.Book.Price,
+                    BookImagePath = item.Book.BookImages.FirstOrDefault().ImagePath
+                });
+            }
+            
+            ViewBag.SepetItem = shopCart;
 
-            ViewBag.SepetItem = sepet;
-
-            int total = sepet.Count();
+            int total = shopCart.Count();
             Session["ItemCount"] = total;
 
-            return View();
+            return View(ShopCartViewModel);
         }
 
         // -----------------------------------------------------------
@@ -115,7 +134,7 @@ namespace SahaflarPazari.Controllers
 
             // Güncel sepet sayısı
             int newCount = Count - 1;
-
+            Session["ItemCoun"] = newCount;
             return Json(new
             {
                 success = true,
@@ -132,8 +151,23 @@ namespace SahaflarPazari.Controllers
         public async Task<ActionResult> ChooseAdres()
         {
             var userId= User.Identity.GetUserId();
-            var addresses = await _unitOfWork.Addresses.FindAsync(a => a.UserId == userId);
-            return View(addresses);
+            var addresses = (await _unitOfWork.Addresses.FindAsync(a => a.UserId == userId)).ToList();
+            var AdresViewModel = new List<AddressViewModel>();
+            foreach (var item in addresses)
+            {
+                AdresViewModel.Add(new AddressViewModel
+                {
+                    AddressId = item.AddressId,
+                    AddressName = item.AddressName,
+                    City = item.City,
+                    District = item.District,
+                    Neighborhood = item.Neighborhood,
+                    PostalCode = item.PostalCode,
+                    AddressArea = item.AddressArea
+
+                });
+            }
+                return View(AdresViewModel);
         }
 
         // -----------------------------------------------------------
@@ -144,8 +178,28 @@ namespace SahaflarPazari.Controllers
         public async Task<ActionResult> Orders()
         {
             var userId = User.Identity.GetUserId();
-            var orders = await _unitOfWork.Orders.FindAsync(o => o.UserId == userId);
-            return View(orders);
+            var orders = (await _unitOfWork.Orders.FindAsync(o => o.UserId == userId)).ToList();
+            var OrderViewModel = new List<OrderViewModel>();
+            foreach (var item in orders)
+            {
+                OrderViewModel.Add(new Models.OrderViewModel
+                {
+                    OrderId = item.OrderId,
+                    Status = item.OrderStatus,
+                    OrderDate = item.OrderDate.ToString(),
+                    Address = item.Address,
+                    BookViewModel = new BookViewModel
+                    {
+                        BookId = item.Book.BookId,
+                        BookName = item.Book.BookName,
+                        Price = item.Book.Price,
+                        UserName = (await _userManager.FindByIdAsync(item.Book.SellerId)).UserName,
+                        BookImages = item.Book.BookImages.ToList()
+                    }
+
+                });
+            }
+                return View(OrderViewModel);
         }
 
         // -----------------------------------------------------------
@@ -153,7 +207,7 @@ namespace SahaflarPazari.Controllers
         // -----------------------------------------------------------
         [MyAuthorization(Roles = "User,Admin")]
         [HttpPost]
-        public async Task<ActionResult> Orders(int? id)
+        public async Task<ActionResult> CreateOrder(int? id)
         {
          
 
@@ -162,6 +216,16 @@ namespace SahaflarPazari.Controllers
             {
                 return new HttpStatusCodeResult(400, "Adres Bulunamadı");
             }
+            var AddressViewModel = new AddressViewModel
+            {
+                AddressName = address.AddressName,
+                City = address.City,
+                District = address.District,
+                Neighborhood = address.Neighborhood,
+                PostalCode = address.PostalCode,
+                AddressArea = address.AddressArea
+            };
+
             var userId = User.Identity.GetUserId();
 
             // Kullanıcının sepeti
@@ -175,7 +239,7 @@ namespace SahaflarPazari.Controllers
                 {
                     UserId = userId,
                     BookId = item.BookId,
-                    Address = address.AddressName, // ya da address.ToString()
+                    Address = AddressViewModel.ToString(), // ya da address.ToString()
                     OrderDate = nowLocal,
                     OrderStatus = "Hazırlanıyor"
                 });
@@ -185,8 +249,6 @@ namespace SahaflarPazari.Controllers
             {
                 _unitOfWork.Orders.AddAsync(order);
             }
-
-            await _unitOfWork.CommitAsync();
 
             // Tüm sepeti temizlemek istersen:
             foreach (var item in cartItems)
@@ -205,14 +267,37 @@ namespace SahaflarPazari.Controllers
         public async Task<ActionResult> SoldItems()
         {
             var userId = User.Identity.GetUserId();
-            var orders = (await _unitOfWork.Orders.FindAsync(o => o.Book.SellerId == userId)).ToList();
-            return View(orders);
+            var orders = (await _unitOfWork.Orders.FindAsync(o => o.UserId == userId)).ToList();
+            var OrderViewModel = new List<OrderViewModel>();
+            foreach (var item in orders)
+            {
+                OrderViewModel.Add(new Models.OrderViewModel
+                {
+                    OrderId = item.OrderId,
+                    Status = item.OrderStatus,
+                    OrderDate = item.OrderDate.ToString(),
+                    Address = item.Address,
+                    BookViewModel = new BookViewModel
+                    {
+                        BookId = item.Book.BookId,
+                        BookName = item.Book.BookName,
+                        Price = item.Book.Price,
+                        UserName = (await _userManager.FindByIdAsync(item.Book.SellerId)).UserName,
+                        BookImages = item.Book.BookImages.ToList(),
+                        AuthorName = item.Book.Author,
+                        Description= item.Book.Description,
+
+                    }
+
+                });
+            }
+            return View(OrderViewModel);
         }
 
         // -----------------------------------------------------------
         // [Durum GET] -> Sipariş durumunu güncelle
         // -----------------------------------------------------------
-        public async Task<ActionResult> Durum(int id, string durum)
+        public async Task<ActionResult> ChangeStatus(int id, string durum)
         {
             var order = await _unitOfWork.Orders.GetByIdAsync(id);
             if (order == null)

@@ -12,7 +12,8 @@ namespace SahaflarPazari.Models
 
         public string PublisherName { get; set; }
         public string UserName { get; set; }
-
+        public string AuthorName { get; set; }
+        public string AddedDate { get; set; }
 
     }
 }

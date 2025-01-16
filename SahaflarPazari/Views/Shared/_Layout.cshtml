@@ -72,48 +72,47 @@
             }
 
         }
-        <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
-        <nav class="humberger__menu__nav mobile-menu">
-            <ul>
-                <li class="active"><a href="@Url.Action("Index", "Home")">Home</a></li>
-                
-                <li>
-                    <a href="/Book/MyBooks">Kitaplarım</a>
-                </li>
-                <li>
-                    <a href="#">Siparişler </a>
-                    <ul class="header__menu__dropdown">
-                        <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
-                        <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
-                    </ul>
-                <li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a href="#">Admin</a>
+        @if ((User.IsInRole("User") || User.IsInRole("Admin")))
+        {
+            <nav class="humberger__menu__nav mobile-menu">
+                <ul>
+                    <li class="active"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li><a href="/Book/MyBooks">Kitaplarım</a></li>
+                    <li>
+                        <a href="#">Siparişler</a>
                         <ul class="header__menu__dropdown">
-                            <li><a href="@Url.Action("Users","Admin")">Kullanıcılar</a></li>
-                            <li><a href="@Url.Action("Complaints","Admin")">Sikayetler</a></li>
-                          
+                            <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
+                            <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
                         </ul>
-                    }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a href="#">Admin</a>
+                            <ul class="header__menu__dropdown">
+                                <li><a href="@Url.Action("Users", "Admin")">Kullanıcılar</a></li>
+                                <li><a href="@Url.Action("Complaints", "Admin")">Sikayetler</a></li>
+
+                            </ul>
+                        }
 
 
-                </li>
-            </ul>
-        </nav>
-        <div id="mobile-menu-wrap"></div>
-        <div class="header__top__right__social">
-            <a href="#" style="text-decoration: none; color: blue;"><i class="fab fa-facebook"></i> Facebook</a>
-            <a href="#" style="text-decoration: none; color: skyblue;"><i class="fab fa-twitter"></i> Twitter</a>
-            <a href="#" style="text-decoration: none; color: #0e76a8;"><i class="fab fa-linkedin"></i> LinkedIn</a>
-            <a href="#" style="text-decoration: none; color: red;"><i class="fab fa-pinterest"></i> Pinterest</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+            <div id="mobile-menu-wrap"></div>
+            <div class="header__top__right__social">
+                <a href="#" style="text-decoration: none; color: blue;"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="#" style="text-decoration: none; color: skyblue;"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="#" style="text-decoration: none; color: #0e76a8;"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="#" style="text-decoration: none; color: red;"><i class="fab fa-pinterest"></i> Pinterest</a>
+            </div>
+            <div class="humberger__menu__contact">
+                <ul>
+                    <li>@HttpContext.Current.User.Identity.Name</li>
+                </ul>
+            </div>
         </div>
-        <div class="humberger__menu__contact">
-            <ul>
-                <li>@HttpContext.Current.User.Identity.Name</li>
-            </ul>
-        </div>
-    </div>
     <!-- Humberger End -->
     <!-- Header Section Begin -->
     <header class="header">
@@ -154,21 +153,25 @@
                     <nav class="header__menu">
                         <ul>
 
-                         
-                            <li>
-                                <a href="#">Siparişler </a>
-                                <ul class="header__menu__dropdown">
-                                    <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
-                                    <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
-                                </ul>
-                            </li>
+                            @if ((User.IsInRole("User") || User.IsInRole("Admin")))
+                            {
+                                <li>
+                                    <a href="#">Siparişler </a>
+                                    <ul class="header__menu__dropdown">
+                                        <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
+                                        <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
+                                    </ul>
+                                </li>
+
+                            }
+
 
                             @if ((User.IsInRole("User") || User.IsInRole("Admin")))
                             {
                                 <li><a href="/Book/MyBooks">Kitaplarım</a></li>
                             }
 
-                           
+
                             <li>
                                 @if (User.IsInRole("Admin"))
                                 {
@@ -176,7 +179,7 @@
                                     <ul class="header__menu__dropdown">
                                         <li><a href="@Url.Action("Users","Admin")">Kullanıcılar</a></li>
                                         <li><a href="@Url.Action("Complaints","Admin")">Şikayetler</a></li>
-                                       
+
                                     </ul>
                                 }
 

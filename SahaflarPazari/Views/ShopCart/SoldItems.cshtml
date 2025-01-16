@@ -1,5 +1,5 @@
-﻿@using Domain.Entities;
-@model  List<Order>
+﻿@using SahaflarPazari.Models;
+@model List<OrderViewModel>
 @{
     ViewBag.Title = "SoldItems";
 }
@@ -26,15 +26,15 @@
                                         <div class="media-body my-auto text-right">
 
                                             <div class="row  my-auto flex-column flex-md-row">
-                                                <div class="sq align-self-center "> <img class="img-fluid  my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="~/Content/img/Kitap_Resimleri/@k.Kitap.KitapResimleri.ToList()[0].DataYolu" width="135" height="135" /> </div>
-                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b> @k.Book.BookName</b></h6> </div>
-                                                <div class="col my-auto  "> <small><b>Yayınevi: </b>@k.Book.Publisher.PublisherName</small></div>
-                                                <div class="col my-auto  "> <small><b>Yazar: </b>@k.Book.Author</small></div>
-                                                <div class="col my-auto  "> <small><b>Kitabın Eklenme Tarihi: </b>@k.Book.AddedDate</small></div>
+                                                <div class="sq align-self-center "> <img class="img-fluid  my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="~/Content/img/Kitap_Resimleri/@k.BookViewModel.BookImages[0].ImagePath" width="135" height="135" /> </div>
+                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b> @k.BookViewModel.BookName</b></h6> </div>
+                                                <div class="col my-auto  "> <small><b>Yayınevi: </b>@k.BookViewModel.PublisherName</small></div>
+                                                <div class="col my-auto  "> <small><b>Yazar: </b>@k.BookViewModel.AuthorName</small></div>
+                                                <div class="col my-auto  "> <small><b>Kitabın Eklenme Tarihi: </b>@k.BookViewModel.AddedDate</small></div>
 
                                             </div>
                                             <div class="row  my-auto flex-column flex-md-row">
-                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b>Açıklama</b> @k.Book.Description</h6> </div>
+                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b>Açıklama</b> @k.BookViewModel.Description</h6> </div>
 
                                             </div>
                                         </div>
@@ -47,7 +47,7 @@
                                             <div class="media row justify-content-center">
                                                 <div class="col-auto flex-col-auto">
                                                     <select class="form-select-list kategori" data-id="@k.OrderId" name="SiparisDurumu">
-                                                        <option value="@k.OrderStatus">@k.OrderStatus</option>
+                                                        <option value="@k.Status">@k.Status</option>
                                                         <option value="Gönderildi">Gönderildi</option>
                                                         <option value="Dağıtımda">Dağıtımda</option>
                                                         <option value="Teslim Edildi">Teslim Edildi</option>
@@ -68,7 +68,7 @@
                             </div>
                             <div class="row justify-content-around">
                                 <div class="flex-sm-col text-right col"><p class="mb-1"> <b>Toplam</b></p> </div>
-                                <div class="flex-sm-col col-auto"><p class="mb-1">&#8378;@k.Book.Price</p></div>
+                                <div class="flex-sm-col col-auto"><p class="mb-1">&#8378;@k.BookViewModel.Price</p></div>
                             </div>
 
                             <div class="row justify-content-around">
@@ -121,7 +121,7 @@
             var dataSend = dataId + "&durum=" + selectedCountry;
             $.ajax({
                 type: "POST",
-                url: "/ShopCart/Durum",
+                url: "/ShopCart/ChangeStatus",
                 data: dataSend,
                 success: function (response) {
                     $("#bookCount").text(response.BookCount);
