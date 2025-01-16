@@ -1,5 +1,5 @@
 ﻿@using SahaflarPazari.Models;
-@model  List<Siparisler>
+@model List<OrderViewModel>
 @{
     ViewBag.Title = "SoldItems";
 }
@@ -13,8 +13,8 @@
 
                 <div class="card-body">
                     <div class="row justify-content-between mb-3">
-                        <div class="col-auto"> <h6 class="color-1 mb-0 change-color">Tarih: @k.SiparisTarihi</h6> </div>
-                        <div class="col-auto  "> <small>Sipariş Id : @k.SiparisId</small> </div>
+                        <div class="col-auto"> <h6 class="color-1 mb-0 change-color">Tarih: @k.OrderDate</h6> </div>
+                        <div class="col-auto  "> <small>Sipariş Id : @k.OrderId</small> </div>
                     </div>
 
                     <div class="row mt-4">
@@ -26,16 +26,15 @@
                                         <div class="media-body my-auto text-right">
 
                                             <div class="row  my-auto flex-column flex-md-row">
-                                                <div class="sq align-self-center "> <img class="img-fluid  my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="~/Content/img/Kitap_Resimleri/@k.Kitap.KitapResimleri.ToList()[0].DataYolu" width="135" height="135" /> </div>
-                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b> @k.Kitap.KitapAdi</b></h6> </div>
-                                                <div class="col my-auto  "> <small><b>Satıcı: </b> @k.Kitap.Kullanici.KullaniciAdi </small></div>
-                                                <div class="col my-auto  "> <small><b>Yayınevi: </b>@k.Kitap.Yayinevi.YayineviAdi</small></div>
-                                                <div class="col my-auto  "> <small><b>Yazar: </b>@k.Kitap.Yazar</small></div>
-                                                <div class="col my-auto  "> <small><b>Kitabın Eklenme Tarihi: </b>@k.Kitap.EklenmeTarihi</small></div>
+                                                <div class="sq align-self-center "> <img class="img-fluid  my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="~/Content/img/Kitap_Resimleri/@k.BookViewModel.BookImages[0].ImagePath" width="135" height="135" /> </div>
+                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b> @k.BookViewModel.BookName</b></h6> </div>
+                                                <div class="col my-auto  "> <small><b>Yayınevi: </b>@k.BookViewModel.PublisherName</small></div>
+                                                <div class="col my-auto  "> <small><b>Yazar: </b>@k.BookViewModel.AuthorName</small></div>
+                                                <div class="col my-auto  "> <small><b>Kitabın Eklenme Tarihi: </b>@k.BookViewModel.AddedDate</small></div>
 
                                             </div>
                                             <div class="row  my-auto flex-column flex-md-row">
-                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b>Açıklama</b> @k.Kitap.KitapAdi</h6> </div>
+                                                <div class="col-auto my-auto "> <h6 class="mb-0"> <b>Açıklama</b> @k.BookViewModel.Description</h6> </div>
 
                                             </div>
                                         </div>
@@ -44,11 +43,11 @@
                                     <div class="row ">
                                         <div class="col-md-3 mb-3">  <small> Sipariş Takibi <span><i class=" ml-2 fa fa-refresh" aria-hidden="true"></i></span></small> </div>
                                         <div class="col mt-auto">
-                                            <div class="progress"><div class="progress-bar progress-bar  rounded" id="@k.SiparisId" style="width: 10%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div> </div>
+                                            <div class="progress"><div class="progress-bar progress-bar  rounded" id="@k.OrderId" style="width: 10%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div> </div>
                                             <div class="media row justify-content-center">
                                                 <div class="col-auto flex-col-auto">
-                                                    <select class="form-select-list kategori" data-id="@k.SiparisId" name="SiparisDurumu">
-                                                        <option value="@k.SiparisDurumu">@k.SiparisDurumu</option>
+                                                    <select class="form-select-list kategori" data-id="@k.OrderId" name="SiparisDurumu">
+                                                        <option value="@k.Status">@k.Status</option>
                                                         <option value="Gönderildi">Gönderildi</option>
                                                         <option value="Dağıtımda">Dağıtımda</option>
                                                         <option value="Teslim Edildi">Teslim Edildi</option>
@@ -69,7 +68,7 @@
                             </div>
                             <div class="row justify-content-around">
                                 <div class="flex-sm-col text-right col"><p class="mb-1"> <b>Toplam</b></p> </div>
-                                <div class="flex-sm-col col-auto"><p class="mb-1">&#8378;@k.Kitap.Fiyat</p></div>
+                                <div class="flex-sm-col col-auto"><p class="mb-1">&#8378;@k.BookViewModel.Price</p></div>
                             </div>
 
                             <div class="row justify-content-around">
@@ -122,7 +121,7 @@
             var dataSend = dataId + "&durum=" + selectedCountry;
             $.ajax({
                 type: "POST",
-                url: "/ShopCart/Durum",
+                url: "/ShopCart/ChangeStatus",
                 data: dataSend,
                 success: function (response) {
                     $("#bookCount").text(response.BookCount);

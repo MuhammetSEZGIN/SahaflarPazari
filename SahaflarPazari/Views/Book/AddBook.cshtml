@@ -1,0 +1,129 @@
+﻿@using Domain.Entities
+@model List<BookCategory>
+
+@{
+    ViewBag.Title = "AddBook";
+}
+
+<div class="container rounded bg-white mt-5 mb-5 detailcontainer">
+    <div class="row">
+        <div class="col-md-12 border-right">
+            <div class="p-3 py-5">
+               
+                <form id="imageUploadForm" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Kitap Ekle</h4>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="labels">Kitap Adı</label>
+                            <input type="text" class="form-control" name="BookName" id="BookName" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label>Kategori</label>
+                            <select class="form-select-list" id="CategoryId" name="CategoryId">
+                                @foreach (var kategori in Model)
+                                {
+                                    <option value="@kategori.CategoryId">@kategori.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Yayınevi</label>
+                            <select class="form-select-list" id="PublisherId" name="PublisherId">
+                                @foreach (var yayinevi in ViewBag.yayinevi as List<Publisher>)
+                                {
+                                    <option value="@yayinevi.PublisherId">@yayinevi.PublisherName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Detay</label>
+                            <textarea class="form-control" rows="3" name="Description" id="Description"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels">Yazar</label>
+                            <input type="text" class="form-control" name="Author" id="Author" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label class="labels">Kitap Fiyatı</label>
+                            <input type="text" class="form-control" name="Price" id="Price" />
+                        </div>
+                        <!-- The file input (name="file" so it binds to HttpPostedFileBase file) -->
+                        <div class="col-md-8">
+                            <label>Kapak Resmi</label>
+                            <input type="file" name="file" id="file" accept=".jpg, .jpeg, .png" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="mt-5 text-center">
+                            <button class="btn btn-primary profile-button" type="submit">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script src="~/Content/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#imageUploadForm").submit(function (e) {
+            e.preventDefault();
+
+            // Build a FormData object from the entire form,
+            // including the anti-forgery token and the file
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '/Book/AddBook',  // The controller action
+                type: 'POST',
+                data: formData,
+                processData: false,  // Because we're sending a file
+                contentType: false,  // Let jQuery set the proper boundary
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        // redirect or do something
+                        window.location.href = response.returnUrl;
+                    } else {
+                        alert("Hata: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Resim yükleme sırasında bir hata oluştu.");
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .detailcontainer {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .form-select-list {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+    }
+</style>

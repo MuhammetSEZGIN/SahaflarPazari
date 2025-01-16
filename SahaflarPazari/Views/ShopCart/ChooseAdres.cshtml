@@ -1,7 +1,7 @@
 ﻿@using SahaflarPazari.Models;
-@model List<Adres>
+@model List<AddressViewModel>
 @{
-    ViewBag.Title = "ChooseAdres";
+    ViewBag.Title = "ChooseAddress";
 }
 
 
@@ -20,9 +20,10 @@
                         </span>
 
                         <div class="d-flex flex-column ms-3">
-                            <h6 class="fw-bold">@k.AdresAdi</h6>
-                            <span>@k.PostaKodu, @k.Sehir, @k.Ilce, @k.Mahalle <br>@k.AdresAlani</span>
-                            <button type="button" data-adrId="@k.AdresId" class="btn btn-info sec">Seç</button>
+                            <h6 class="fw-bold">@k.AddressName</h6>
+                            <span>@k.PostalCode, @k.City, @k.District, @k.Neighborhood <br>@k.AddressArea</span>
+                            
+                            <button type="button" data-adrId="@k.AddressId" class="btn btn-info sec">Seç</button>
                         </div>
 
                     </div>
@@ -31,7 +32,7 @@
             </div>
         }
         <div class="p-3 card-child mt-4 py-4">
-            <a href="@Url.Action("Index","Profil")" style="text-decoration:none">
+            <a href="@Url.Action("Index","Profile")" style="text-decoration:none">
                 <div class="d-flex flex-row align-items-center">
                     <span class="circle-3">
                         <i class="fa fa-plus"></i>
@@ -61,7 +62,7 @@
         
         $.ajax({
             type: "POST",
-            url: "/ShopCart/Orders",
+            url: "/ShopCart/CreateOrder",
             data: sId,
             success: function (response) {
                 window.location.replace("Orders");

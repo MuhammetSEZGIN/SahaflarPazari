@@ -1,0 +1,94 @@
+﻿
+@using SahaflarPazari.Models;
+@model UserModel
+@{
+    ViewBag.Title = "ShowList";
+}
+
+
+<section class="featured spad">
+    <div class="container">
+        @foreach (var k in Model.Wishlists)
+        {
+            var id = k.Book.BookId;
+            var idData = id + "favori";
+            <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat" id="@idData" >
+                <div class="featured__item">
+                    <div class="featured__item__pic set-bg" data-setbg="../Content/img/Kitap_Resimleri/@k.Book.BookImages.ToList()[0].ImagePath">
+
+                        <ul class="featured__item__pic__hover">
+                        
+
+                            <li><a href="#!" data-ktgId="@k.Book.BookId" class="removeList"><i class="fa fa-heart " style="color: rgb(255, 0, 0);"></i></a></li>
+                            <li><a href="#!" id="dataNumber" data-ktgId="@k.Book.BookId" class="deneme"><i class="fa fa-info-circle"></i></a></li>
+                            <li><a href="#!"  class="addtocart" data-ktgId="@k.Book.BookId"><i class="fa fa-shopping-cart"></i></a></li>
+                        </ul>
+
+                    </div>
+                    <div class="featured__item__text">
+                        <h6>@k.Book.BookName</h6>
+                        <h5>@k.Book.Price</h5>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+</section>
+
+
+<script src="~/Content/js/jquery-3.3.1.min.js"></script>
+<script src="~/Content/js/bootstrap.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+
+        $('.removeList').on('click', function (e) {
+            var id = $(this).attr('data-ktgId');
+            console.log(id);
+            var sId = "kitapId=" + id;
+            console.log(sId);
+            var customId = id + "favori";
+            // Send the serialized data to the server using AJAX
+            $.ajax({
+                type: "POST",
+                url: "/Profil/UpdateList",
+                data: sId,
+                success: function (response) {
+                    $("#" + customId).remove();
+                    console.log(response.message);
+
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors, if any
+                    console.log(error);
+                }
+            });
+        });
+
+
+        $('.addtocart').on('click', function (e) {
+            var id = $(this).attr('data-ktgId');
+            console.log(id);
+
+            var sId = "id=" + id;
+            console.log(sId);
+            // Send the serialized data to the server using AJAX
+            $.ajax({
+                type: "POST",
+                url: "/ShopCart/AddToCart",
+                data: sId,
+                success: function (response) {
+                    if (response.success)
+                        $("#bookCount").text(response.BookCount);
+                    else
+                        alert(response.message);
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors, if any
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>

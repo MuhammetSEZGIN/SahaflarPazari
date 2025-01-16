@@ -1,5 +1,4 @@
-﻿@using SahaflarPazari.Models;
-@model Kitap
+﻿@model SahaflarPazari.Models.BookViewModel
 @{
     ViewBag.Title = "Details";
 }
@@ -14,10 +13,10 @@
 
                     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
-                            @for (int i = 0; i < Model.KitapResimleri.ToList().Count; i++)
+                            @for (int i = 0; i < Model.BookImages.Count; i++)
                             {
                                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                                    <img style="width: fit-content; height:fit-content" class="d-block w-100" src="~/Content/img/Kitap_Resimleri/@Model.KitapResimleri.ToList()[i].DataYolu" alt="Slide @(i + 1)">
+                                    <img style="width: fit-content; height:fit-content" class="d-block w-100" src="~/Content/img/Kitap_Resimleri/@Model.BookImages[i].ImagePath" alt="Slide @(i + 1)">
                                 </div>
                             }
                         </div>
@@ -35,33 +34,33 @@
             </div>
             <div class="col-lg-6 col-md-6">
                 <div class="product__details__text">
-                    <h3>@Model.KitapAdi</h3>
+                    <h3>@Model.BookName</h3>
 
-                    <div class="product__details__price">@Model.Fiyat</div>
+                    <div class="product__details__price">@Model.Price</div>
                     <p>
-                        @Model.Detay
+                        @Model.Description
                     </p>
 
                     @if (User.IsInRole("Admin"))
                     {
-                        <button type="button" class="btn btn-outline-danger btn-sm kullaniciSil" data-usrName="@Model.KitapAdi" data-usrId="@Model.KitapId" data-toggle="modal" data-target="#exampleModalCenter">
+                        <button type="button" class="btn btn-outline-danger btn-sm kullaniciSil" data-usrName="@Model.BookName" data-usrId="@Model.BookId" data-toggle="modal" data-target="#exampleModalCenter">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
 
                     }
                     @if (User.IsInRole("User"))
                     {
-                        <button type="button" class="btn btn-outline-danger btn sikayetEt" data-usrName="@Model.KitapAdi" data-usrId="@Model.KitapId" data-toggle="modal" data-target="#exampleModalCenter1">
+                        <button type="button" class="btn btn-outline-danger btn sikayetEt" data-usrName="@Model.BookName" data-usrId="@Model.BookId" data-toggle="modal" data-target="#exampleModalCenter1">
                             <i class="fa fa-warning"></i>
                         </button>
                     }
 
 
-                    <a href="#!" id="flogin" data-ktgId="@Model.KitapId" class="primary-btn addtocart">SEPETE EKLE</a>
+                    <a href="#!" id="flogin" data-ktgId="@Model.BookId" class="primary-btn addtocart">SEPETE EKLE</a>
 
                     <ul>
-                        <li><b>Satıcı</b> <span>@Model.Kullanici.KullaniciAdi</span></li>
-                        <li><b>Yayın Evi</b> <span>@Model.Yayinevi.YayineviAdi</span></li>
+                        <li><b>Satıcı</b> <span>@Model.UserName</span></li>
+                        <li><b>Yayın Evi</b> <span>@Model.PublisherName</span></li>
 
                     </ul>
                 </div>

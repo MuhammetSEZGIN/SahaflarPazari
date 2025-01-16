@@ -53,7 +53,7 @@
                 <ul>
                     <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
                     <li><a href="@Url.Action("ShopCart","ShopCart")"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-                    <li><a href="@Url.Action("Profil", "Index")"><i class="fa fa-user" aria-hidden="true" style="text-decoration: none; color: green;"></i> @HttpContext.Current.User.Identity.Name</a></li>
+                    <li><a href="@Url.Action("Index","Profile")"><i class="fa fa-user" aria-hidden="true" style="text-decoration: none; color: green;"></i> @HttpContext.Current.User.Identity.Name</a></li>
                 </ul>
 
             </div>
@@ -72,48 +72,47 @@
             }
 
         }
-        <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
-        <nav class="humberger__menu__nav mobile-menu">
-            <ul>
-                <li class="active"><a href="@Url.Action("Index", "Home")">Home</a></li>
-                
-                <li>
-                    <a href="/Kitap/MyBooks">Kitaplarım</a>
-                </li>
-                <li>
-                    <a href="#">Siparişler </a>
-                    <ul class="header__menu__dropdown">
-                        <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
-                        <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
-                    </ul>
-                <li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a href="#">Admin</a>
+        @if ((User.IsInRole("User") || User.IsInRole("Admin")))
+        {
+            <nav class="humberger__menu__nav mobile-menu">
+                <ul>
+                    <li class="active"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li><a href="/Book/MyBooks">Kitaplarım</a></li>
+                    <li>
+                        <a href="#">Siparişler</a>
                         <ul class="header__menu__dropdown">
-                            <li><a href="@Url.Action("Kullanicilar","Admin")">Kullanıcılar</a></li>
-                            <li><a href="@Url.Action("Sikayetler","Admin")">Sikayetler</a></li>
-                          
+                            <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
+                            <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
                         </ul>
-                    }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a href="#">Admin</a>
+                            <ul class="header__menu__dropdown">
+                                <li><a href="@Url.Action("Users", "Admin")">Kullanıcılar</a></li>
+                                <li><a href="@Url.Action("Complaints", "Admin")">Sikayetler</a></li>
+
+                            </ul>
+                        }
 
 
-                </li>
-            </ul>
-        </nav>
-        <div id="mobile-menu-wrap"></div>
-        <div class="header__top__right__social">
-            <a href="#" style="text-decoration: none; color: blue;"><i class="fab fa-facebook"></i> Facebook</a>
-            <a href="#" style="text-decoration: none; color: skyblue;"><i class="fab fa-twitter"></i> Twitter</a>
-            <a href="#" style="text-decoration: none; color: #0e76a8;"><i class="fab fa-linkedin"></i> LinkedIn</a>
-            <a href="#" style="text-decoration: none; color: red;"><i class="fab fa-pinterest"></i> Pinterest</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+            <div id="mobile-menu-wrap"></div>
+            <div class="header__top__right__social">
+                <a href="#" style="text-decoration: none; color: blue;"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="#" style="text-decoration: none; color: skyblue;"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="#" style="text-decoration: none; color: #0e76a8;"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="#" style="text-decoration: none; color: red;"><i class="fab fa-pinterest"></i> Pinterest</a>
+            </div>
+            <div class="humberger__menu__contact">
+                <ul>
+                    <li>@HttpContext.Current.User.Identity.Name</li>
+                </ul>
+            </div>
         </div>
-        <div class="humberger__menu__contact">
-            <ul>
-                <li>@HttpContext.Current.User.Identity.Name</li>
-            </ul>
-        </div>
-    </div>
     <!-- Humberger End -->
     <!-- Header Section Begin -->
     <header class="header">
@@ -154,29 +153,33 @@
                     <nav class="header__menu">
                         <ul>
 
-                         
-                            <li>
-                                <a href="#">Siparişler </a>
-                                <ul class="header__menu__dropdown">
-                                    <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
-                                    <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
-                                </ul>
-                            </li>
+                            @if ((User.IsInRole("User") || User.IsInRole("Admin")))
+                            {
+                                <li>
+                                    <a href="#">Siparişler </a>
+                                    <ul class="header__menu__dropdown">
+                                        <li><a href="/ShopCart/Orders">Siparişlerim</a></li>
+                                        <li><a href="/ShopCart/SoldItems">Gelen Siparişler</a></li>
+                                    </ul>
+                                </li>
+
+                            }
+
 
                             @if ((User.IsInRole("User") || User.IsInRole("Admin")))
                             {
-                                <li><a href="/Kitap/MyBooks">Kitaplarım</a></li>
+                                <li><a href="/Book/MyBooks">Kitaplarım</a></li>
                             }
 
-                           
+
                             <li>
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <a href="#">Admin</a>
                                     <ul class="header__menu__dropdown">
-                                        <li><a href="@Url.Action("Kullanicilar","Admin")">Kullanıcılar</a></li>
-                                        <li><a href="@Url.Action("Sikayetler","Admin")">Şikayetler</a></li>
-                                       
+                                        <li><a href="@Url.Action("Users","Admin")">Kullanıcılar</a></li>
+                                        <li><a href="@Url.Action("Complaints","Admin")">Şikayetler</a></li>
+
                                     </ul>
                                 }
 
@@ -191,7 +194,7 @@
                             <ul>
 
                                 <li><a href="@Url.Action("ShopCart","ShopCart")"><i class="fa fa-shopping-bag"></i> <span id="bookCount">@Session["ItemCount"]</span></a></li>
-                                <li><a href="@Url.Action("Index", "Profil")" style="text-decoration: none; color: green;"><i class="fa fa-user" aria-hidden="true"></i> @HttpContext.Current.User.Identity.Name</a></li>
+                                <li><a href="@Url.Action("Index", "Profile")" style="text-decoration: none; color: green;"><i class="fa fa-user" aria-hidden="true"></i> @HttpContext.Current.User.Identity.Name</a></li>
                                 <li>
                                     <a href="@Url.Action("Logout", "Account")" style="text-decoration: none; color: red;">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
@@ -288,7 +291,7 @@
                         <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
                             <!-- Links -->
                             <h6 class="text-uppercase fw-bold mb-4">İletişime Geçin</h6>
-                            <p><i class="fas fa-home me-3 text-secondary"></i> New York, NY 10012, US</p>
+                            <p><i class="fas fa-home me-3 text-secondary"></i>Turkiye İstanbul</p>
                             <p>
                                 <i class="fas fa-envelope me-3 text-secondary"></i>
                                 info@example.com
@@ -301,13 +304,7 @@
                     <!-- Grid row -->
                 </div>
             </section>
-            <!-- Section: Links  -->
-            <!-- Copyright -->
-            <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.025);">
-                © 2021 Copyright:
-                <a class="text-reset fw-bold" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-            </div>
-            <!-- Copyright -->
+    
         </footer>
   
     <!-- Footer Section End -->

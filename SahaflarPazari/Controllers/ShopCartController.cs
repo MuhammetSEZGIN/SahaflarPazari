@@ -1,232 +1,345 @@
-﻿using SahaflarPazari.Models;
-using SahaflarPazari.Security;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Security.Policy;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using SahaflarPazari.Security;
+using Domain.Interfaces;       // IUnitOfWork
+using Domain.Entities;
+using Microsoft.AspNet.Identity;
+using SahaflarPazari.Models;
+using Infrastructure.Identity;        // User, ShoppingCart, Order, Address, Book, etc.
 
 namespace SahaflarPazari.Controllers
 {
     public class ShopCartController : Controller
     {
-        // GET: ShopCart
-        private SahaflarPazariEntities db= new SahaflarPazariEntities();
-        public string GetCurrentUserName()
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ApplicationUserManager _userManager;
+
+        public ShopCartController(IUnitOfWork unitOfWork, ApplicationUserManager userManager)
         {
-            if (HttpContext.Request.IsAuthenticated)
-            {
-
-                HttpCookie authCookie = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName];
-
-                if (authCookie != null && !string.IsNullOrEmpty(authCookie.Value))
-                {
-
-                    FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-                    if (authTicket != null && !authTicket.Expired)
-                    {
-
-                        return authTicket.Name;
-
-                    }
-                }
-            }
-
-            return String.Empty;
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
+
+        // -----------------------------------------------------------
+        // [ShopCart GET] -> Alışveriş sepeti görüntüleme
+        // -----------------------------------------------------------
         [MyAuthorization(Roles = "User,Admin")]
         [HttpGet]
-        public ActionResult ShopCart()
-        {
-            String username=GetCurrentUserName();
-            if(username != String.Empty)
-            {
-                Kullanici kullanici = new Kullanici();
-                kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == username);
-                List<AlisverisSepeti> sepet = db.AlisverisSepeti.Where(x => x.KullaniciId == kullanici.KullaniciId).ToList();
-                ViewBag.SepetItem = sepet;
-                int total=CalculateBooksCount(kullanici.KullaniciId);
-               
-                Session["ItemCount"] = total;
-                return View();
-            
-            }
-            return Json(new { success = false, message = "Siparis Listesi Boş" }, JsonRequestBehavior.AllowGet);
-        }
-
-
-        [MyAuthorization(Roles = "User,Admin")]
-        [HttpPost]
-        public ActionResult AddToCart(int id)
+        public async Task<ActionResult> ShopCart()
         {
            
-            String username = GetCurrentUserName();
-            if (username != String.Empty)
+            // Sepet itemleri
+            var userId = User.Identity.GetUserId();
+            var shopCart = (await _unitOfWork.ShoppingCarts.FindAsync(x => x.UserId == userId)).ToList();
+            
+            if (shopCart == null)
             {
-                Kullanici kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == username);
-                List<int> kitap = db.Kitap.Where(x => x.SaticiId == kullanici.KullaniciId).Select(x=>x.KitapId).ToList();
-
-                if (kitap.Contains(id))
+                return Json(new { success = false, message = "Siparis Listesi Boş" }, JsonRequestBehavior.AllowGet);
+            }
+            var ShopCartViewModel = new List<ShopCartViewModel>();
+            
+            foreach(var item in shopCart)
+            {
+                ShopCartViewModel.Add(new ShopCartViewModel
                 {
-                    return  Json(new { success = false, message = "Kitap Zaten Size Ait" });
-                }
-                AlisverisSepeti alisverisSepeti = new AlisverisSepeti();
-                alisverisSepeti.KitapId = id;
-               
-                alisverisSepeti.KullaniciId=kullanici.KullaniciId;
-                int Count=CalculateBooksCount(kullanici.KullaniciId);
-                
-                db.AlisverisSepeti.Add(alisverisSepeti);
-                db.SaveChanges();
-                return Json(new { success = true, message = "Kitap Sepete Eklendi", BookCount= Count+1 });
+                    CartId = item.CartId,
+                    BookId = item.BookId,
+                    BookName = item.Book.BookName,
+                    SellerName = (await _userManager.FindByIdAsync(item.Book.SellerId)).UserName,
+                    BookPrice = item.Book.Price,
+                    BookImagePath = item.Book.BookImages.FirstOrDefault().ImagePath
+                });
             }
-          
-            return Json(new { success = false, message = "Kitap Sepete Eklenemedi" });
-          
+            
+            ViewBag.SepetItem = shopCart;
+
+            int total = shopCart.Count();
+            Session["ItemCount"] = total;
+
+            return View(ShopCartViewModel);
         }
 
-        [MyAuthorization(Roles = "User,Admin")]
-        public ActionResult RemoveFromCart(int ? id)
-        {
-            String username = GetCurrentUserName();
-            int Count = 0;
-            int Sum = 0;
-            if (username != String.Empty)
-            {
-                Kullanici kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == username);
-                Count = CalculateBooksCount(kullanici.KullaniciId);
-                Sum = CalculateSum(kullanici.KullaniciId);
-            }
-
-            AlisverisSepeti alisverisSepeti= new AlisverisSepeti();
-            alisverisSepeti = db.AlisverisSepeti.Find(id);
-            Sum -= alisverisSepeti.Kitap.Fiyat;
-            if (alisverisSepeti != null)
-            {
-                db.AlisverisSepeti.Remove(alisverisSepeti);
-                db.SaveChanges();
-            }
-
-            return Json(new { success = true, message = "Kitap Sepetten Kaldırıldı", BookCount = Count-1, sum = Sum }, JsonRequestBehavior.AllowGet);
-            //return Json(new { success = true, message = "Kitap Sepetten Kaldırıldı" , BookCount = 0} , JsonRequestBehavior.AllowGet);
-        }
-
-        [MyAuthorization(Roles = "User,Admin")]
-        public ActionResult ChooseAdres()
-        {
-            string username = GetCurrentUserName(); 
-            if(username != String.Empty)
-            {
-                Kullanici kullanici= db.Kullanici.FirstOrDefault(x=>x.KullaniciAdi==username);
-                List<Adres> list= new List<Adres>();
-                list= db.Adres.Where(x=>x.KullaniciId==kullanici.KullaniciId).ToList();
-                return View(list);  
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-        }
-
-        [MyAuthorization(Roles = "User,Admin")]
-        [HttpGet]
-        public ActionResult Orders()
-        {
-            string username = GetCurrentUserName();
-            if (username != String.Empty)
-            {
-                Kullanici kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == username);
-                List<Siparisler> siparisler = db.Siparisler.Where(x=>x.KullaniciId== kullanici.KullaniciId).ToList() ;
-                return View(siparisler);
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-        }
-
+        // -----------------------------------------------------------
+        // [AddToCart POST] -> Sepete kitap ekle
+        // -----------------------------------------------------------
         [MyAuthorization(Roles = "User,Admin")]
         [HttpPost]
-        public ActionResult Orders(int ? id)
+        public async Task<ActionResult> AddToCart(int id)
         {
-            string username = GetCurrentUserName();
-            if(username != String.Empty)
-            {
-                Kullanici kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == username);
-                Adres adres = db.Adres.FirstOrDefault(x => x.AdresId == id);
-                List<Siparisler> siparisler = new List<Siparisler>();
-                DateTime nowLocal = DateTime.Now;
-                foreach (var item in kullanici.AlisverisSepeti.ToList())
-                {
-                    siparisler.Add(new Siparisler
-                    {
-                        KullaniciId = kullanici.KullaniciId,
-                        KitapId = item.KitapId,
-                        Adres = adres.ToString(),
-                        SiparisTarihi = nowLocal,
-                        SiparisDurumu = "Hazırlanıyor"
-                    });
-                        
-                       
-                }
-                db.Siparisler.AddRange(siparisler);
-                db.SaveChanges();
 
-                return RedirectToAction("Orders", "ShopCart");
-               
 
-            }
-            else
+            var userId = User.Identity.GetUserId();
+            // Kullanıcının sattığı kitapları çekip, eklenen kitap onlara ait mi kontrol et
+            var userBooks = await _unitOfWork.Books.FindAsync(b => b.SellerId == userId);
+            bool isUserBook = userBooks.Any(b => b.BookId == id);
+            if (isUserBook)
             {
-                return RedirectToAction("Login","Account" );
+                return Json(new { success = false, message = "Kitap Zaten Size Ait" });
             }
+
+            // Sepete ekle
+            var newCartItem = new ShoppingCart
+            {
+                BookId = id,
+                UserId = userId
+            };
+            _unitOfWork.ShoppingCarts.AddAsync(newCartItem);
+            await _unitOfWork.CommitAsync();
+
+            // Sepet sayısını yeniden hesapla
+            int newCount = await CalculateBooksCount(userId);
+
+            return Json(new { success = true, message = "Kitap Sepete Eklendi", BookCount = newCount });
         }
 
+        // -----------------------------------------------------------
+        // [RemoveFromCart] -> Sepetten kitap çıkart
+        // -----------------------------------------------------------
         [MyAuthorization(Roles = "User,Admin")]
-        public ActionResult SoldItems()
+        public async Task<ActionResult> RemoveFromCart(int? id)
         {
-            string username = GetCurrentUserName();
-            if (username != String.Empty)
+            if (!id.HasValue)
             {
-                Kullanici kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == username);
-                List <Siparisler> siparisler = db.Siparisler.Where(x=>x.Kitap.SaticiId==kullanici.KullaniciId).ToList();
-                return View(siparisler);
+                return Json(new { success = false, message = "Sepet ID Bulunamadı" }, JsonRequestBehavior.AllowGet);
             }
-            else
+            var userId = User.Identity.GetUserId(); 
+            // Toplam kitap sayısı / Toplam fiyat
+            int Count = await CalculateBooksCount(userId);
+            int Sum = await CalculateSum(userId);
+
+            // AlışverişSepeti kaydını bul
+            var cartItem = await _unitOfWork.ShoppingCarts.GetByIdAsync(id.Value);
+            if (cartItem == null)
             {
-                return RedirectToAction("Login", "Account");
+                return Json(new { success = false, message = "Sepet item bulunamadı" }, JsonRequestBehavior.AllowGet);
             }
 
+            // Book fiyatını sum'dan düş
+            // Kitabı bul
+            var book = await _unitOfWork.Books.GetByIdAsync(cartItem.BookId);
+            if (book != null)
+            {
+                Sum -= book.Price;
+            }
+
+            // Kaldır
+            await _unitOfWork.ShoppingCarts.DeleteAsync(cartItem.CartId);
+            await _unitOfWork.CommitAsync();
+
+            // Güncel sepet sayısı
+            int newCount = Count - 1;
+            Session["ItemCoun"] = newCount;
+            return Json(new
+            {
+                success = true,
+                message = "Kitap Sepetten Kaldırıldı",
+                BookCount = newCount,
+                sum = Sum
+            }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Durum(int id, string durum)
+        // -----------------------------------------------------------
+        // [ChooseAdres GET] -> Kullanıcının adreslerini seçme
+        // -----------------------------------------------------------
+        [MyAuthorization(Roles = "User,Admin")]
+        public async Task<ActionResult> ChooseAdres()
         {
-            Siparisler siparisler = db.Siparisler.FirstOrDefault(x=>x.SiparisId == id);
-            siparisler.SiparisDurumu=durum;
-            db.SaveChanges();
+            var userId= User.Identity.GetUserId();
+            var addresses = (await _unitOfWork.Addresses.FindAsync(a => a.UserId == userId)).ToList();
+            var AdresViewModel = new List<AddressViewModel>();
+            foreach (var item in addresses)
+            {
+                AdresViewModel.Add(new AddressViewModel
+                {
+                    AddressId = item.AddressId,
+                    AddressName = item.AddressName,
+                    City = item.City,
+                    District = item.District,
+                    Neighborhood = item.Neighborhood,
+                    PostalCode = item.PostalCode,
+                    AddressArea = item.AddressArea
+
+                });
+            }
+                return View(AdresViewModel);
+        }
+
+        // -----------------------------------------------------------
+        // [Orders GET] -> Kullanıcının siparişlerini göster
+        // -----------------------------------------------------------
+        [MyAuthorization(Roles = "User,Admin")]
+        [HttpGet]
+        public async Task<ActionResult> Orders()
+        {
+            var userId = User.Identity.GetUserId();
+            var orders = (await _unitOfWork.Orders.FindAsync(o => o.UserId == userId)).ToList();
+            var OrderViewModel = new List<OrderViewModel>();
+            foreach (var item in orders)
+            {
+                OrderViewModel.Add(new Models.OrderViewModel
+                {
+                    OrderId = item.OrderId,
+                    Status = item.OrderStatus,
+                    OrderDate = item.OrderDate.ToString(),
+                    Address = item.Address,
+                    BookViewModel = new BookViewModel
+                    {
+                        BookId = item.Book.BookId,
+                        BookName = item.Book.BookName,
+                        Price = item.Book.Price,
+                        UserName = (await _userManager.FindByIdAsync(item.Book.SellerId)).UserName,
+                        BookImages = item.Book.BookImages.ToList()
+                    }
+
+                });
+            }
+                return View(OrderViewModel);
+        }
+
+        // -----------------------------------------------------------
+        // [Orders POST] -> Seçilen adresle, sepetteki kitaplardan sipariş oluştur
+        // -----------------------------------------------------------
+        [MyAuthorization(Roles = "User,Admin")]
+        [HttpPost]
+        public async Task<ActionResult> CreateOrder(int? id)
+        {
+         
+
+            var address = await _unitOfWork.Addresses.GetByIdAsync(id.GetValueOrDefault());
+            if (address == null)
+            {
+                return new HttpStatusCodeResult(400, "Adres Bulunamadı");
+            }
+            var AddressViewModel = new AddressViewModel
+            {
+                AddressName = address.AddressName,
+                City = address.City,
+                District = address.District,
+                Neighborhood = address.Neighborhood,
+                PostalCode = address.PostalCode,
+                AddressArea = address.AddressArea
+            };
+
+            var userId = User.Identity.GetUserId();
+
+            // Kullanıcının sepeti
+            var cartItems = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == userId);
+            var orders = new List<Order>();
+            DateTime nowLocal = DateTime.Now;
+
+            foreach (var item in cartItems)
+            {
+                orders.Add(new Order
+                {
+                    UserId = userId,
+                    BookId = item.BookId,
+                    Address = AddressViewModel.ToString(), // ya da address.ToString()
+                    OrderDate = nowLocal,
+                    OrderStatus = "Hazırlanıyor"
+                });
+            }
+
+            foreach (var order in orders)
+            {
+                _unitOfWork.Orders.AddAsync(order);
+            }
+
+            // Tüm sepeti temizlemek istersen:
+            foreach (var item in cartItems)
+            {
+                await _unitOfWork.ShoppingCarts.DeleteAsync(item.CartId);
+            }
+            await _unitOfWork.CommitAsync();
+
+            return RedirectToAction("Orders", "ShopCart");
+        }
+
+        // -----------------------------------------------------------
+        // [SoldItems GET] -> Kullanıcının sattığı kitaplardan gelen siparişler
+        // -----------------------------------------------------------
+        [MyAuthorization(Roles = "User,Admin")]
+        public async Task<ActionResult> SoldItems()
+        {
+            var userId = User.Identity.GetUserId();
+            var orders = (await _unitOfWork.Orders.FindAsync(o => o.UserId == userId)).ToList();
+            var OrderViewModel = new List<OrderViewModel>();
+            foreach (var item in orders)
+            {
+                OrderViewModel.Add(new Models.OrderViewModel
+                {
+                    OrderId = item.OrderId,
+                    Status = item.OrderStatus,
+                    OrderDate = item.OrderDate.ToString(),
+                    Address = item.Address,
+                    BookViewModel = new BookViewModel
+                    {
+                        BookId = item.Book.BookId,
+                        BookName = item.Book.BookName,
+                        Price = item.Book.Price,
+                        UserName = (await _userManager.FindByIdAsync(item.Book.SellerId)).UserName,
+                        BookImages = item.Book.BookImages.ToList(),
+                        AuthorName = item.Book.Author,
+                        Description= item.Book.Description,
+
+                    }
+
+                });
+            }
+            return View(OrderViewModel);
+        }
+
+        // -----------------------------------------------------------
+        // [Durum GET] -> Sipariş durumunu güncelle
+        // -----------------------------------------------------------
+        public async Task<ActionResult> ChangeStatus(int id, string durum)
+        {
+            var order = await _unitOfWork.Orders.GetByIdAsync(id);
+            if (order == null)
+            {
+                return new HttpStatusCodeResult(400, "Sipariş Bulunamadı");
+            }
+
+            order.OrderStatus = durum;
+            _unitOfWork.Orders.UpdateAsync(order);
+            await _unitOfWork.CommitAsync();
+
             return View();
         }
 
+        // -----------------------------------------------------------
+        // [CalculateBooksCount] -> Kullanıcının sepetindeki kitap sayısı
+        // -----------------------------------------------------------
         [MyAuthorization(Roles = "User,Admin")]
-        public int CalculateBooksCount(int id)
-        {  
-            int count = db.AlisverisSepeti.Count(x => x.KullaniciId == id);
-            return count;
-               
-        }
-
-        public int CalculateSum(int id)
+        public async Task<int> CalculateBooksCount(string id)
         {
-
-            int toplamFiyat = db.AlisverisSepeti.Where(s => s.KullaniciId == id).Sum(s => s.Kitap.Fiyat);           
-            return toplamFiyat;
+            var cartItems = await _unitOfWork.ShoppingCarts.FindAsync(x => x.UserId == id);
+            return cartItems.Count();
         }
-        
+
+        // -----------------------------------------------------------
+        // [CalculateSum] -> Kullanıcının sepetindeki kitapların toplam fiyatı
+        // -----------------------------------------------------------
+        public async Task<int> CalculateSum(string id)
+        {
+            // AlışverişSepeti + Book join
+            var cartItems = await _unitOfWork.ShoppingCarts.FindAsync(s => s.UserId == id);
+
+            int totalPrice = 0;
+            foreach (var item in cartItems)
+            {
+                var book = await _unitOfWork.Books.GetByIdAsync(item.BookId);
+                if (book != null)
+                {
+                    totalPrice += book.Price;
+                }
+            }
+            return totalPrice;
+        }
     }
 }
