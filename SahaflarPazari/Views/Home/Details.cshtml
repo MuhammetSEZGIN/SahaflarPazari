@@ -229,14 +229,14 @@
                 $.ajax(
                     {
                         type: "POST",
-                        url: "/Profil/Sikayet",
+                        url: "/Profile/Complaint",
                         data: dataSend,
                         processData: false,
                         cache: false,
                         success: function (succes) {
                             (".toast-body>p").html = succes.message;
                             $('#exampleModalCenter').modal('hide');
-                            window.location.replace("/Kitap/Details/" + id);
+                            window.location.replace("/Book/Details/" + id);
                         }
 
                     });

@@ -32,7 +32,7 @@ namespace SahaflarPazari.Controllers
         // ------------------------------------------------------------------
         [MyAuthorization(Roles = "User")]
         [HttpPost]
-        public async Task<ActionResult> Sikayet(int id, string options)
+        public async Task<ActionResult> Complaint(int id, string options)
         {
             string userId = User.Identity.GetUserId();
             

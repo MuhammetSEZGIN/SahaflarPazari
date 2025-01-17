@@ -101,6 +101,10 @@
     <Compile Include="Migrations\202501151410514_CategoryAndPublisherInitialAdding.Designer.cs">
       <DependentUpon>202501151410514_CategoryAndPublisherInitialAdding.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202501171408529_AddDummyAdmin.cs" />
+    <Compile Include="Migrations\202501171408529_AddDummyAdmin.Designer.cs">
+      <DependentUpon>202501171408529_AddDummyAdmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
@@ -137,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202501151410514_CategoryAndPublisherInitialAdding.resx">
       <DependentUpon>202501151410514_CategoryAndPublisherInitialAdding.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202501171408529_AddDummyAdmin.resx">
+      <DependentUpon>202501171408529_AddDummyAdmin.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

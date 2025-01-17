@@ -1,5 +1,5 @@
 ﻿@using SahaflarPazari.Models;
-@model List<Sikayet>
+@model List<ComplaintsViewModel>
 @{
     ViewBag.Title = "Sikayetler";
 }
@@ -14,16 +14,18 @@
 
                     <div class="blog__item">
                         <div class="blog__item__pic">
-                            <img src="../Content/img/Kitap_Resimleri/@k.Kitap.KitapResimleri.ToList()[0].DataYolu" alt="kitap resmi">
+                            <img src="../Content/img/Kitap_Resimleri/@k.BookImagesPath[0]" alt="kitap resmi">
                         </div>
+                        <h3>Kitap Adı: @k.BookName</h3>
+
                         <div class="blog__item__text">
                             <ul>
-                                <li><i class="fa fa-calendar-o"></i>@k.Tarih</li>
+                                <li><i class="fa fa-calendar-o"></i>@k.ComplaintDate</li>
                             </ul>
-                            <h5>Kitap: @k.Kullanici.KullaniciAdi</h5>
-                            <h5>Sikayet Eden: @k.Kullanici.KullaniciAdi</h5>
-                            <p>@k.SikayetIcerigi </p>
-                            <a href="#!" class="blog__btn deneme" data-ktgid="@k.KitapId">Kitaba Git <span class="arrow_right"></span></a>
+                            <h5>Kitap: @k.ComplaintUserName</h5>
+                            <h5>Sikayet Eden: @k.BookOwner</h5>
+                            <p>@k.ComplaintText </p>
+                            <a href="#!" class="blog__btn deneme" data-ktgid="@k.BookId">Kitaba Git <span class="arrow_right"></span></a>
                         </div>
                     </div>
 

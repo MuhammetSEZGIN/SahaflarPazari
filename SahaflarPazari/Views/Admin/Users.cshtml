@@ -1,8 +1,7 @@
 ﻿@using SahaflarPazari.Models;
+@model List<UserModel>
 @{
     ViewBag.Title = "Index";
-    List<Kullanici> kullanici = ViewBag.Kullanici as List<Kullanici>;
-    List<KullaniciBilgileri> kişisel = ViewBag.Kişisel as List<KullaniciBilgileri>;
 }
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -12,16 +11,12 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
-
-
-
 <div class="container-lg">
     <div class="table-responsive">
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-8"><h2><b>Kullanıcılar</b></h2></div>
-                    
                 </div>
             </div>
             <table class="table table-bordered">
@@ -35,33 +30,28 @@
                         <th>İşlem</th>
                     </tr>
                 </thead>
-                @for (int i = 0; i < kullanici.Count; i++)
-                {
-                    <tbody id="@kullanici[i].KullaniciId ">
-                        <tr>
-                            <td>@kullanici[i].KullaniciAdi</td>
-                            <td>@kişisel[i].Ad</td>
-                            <td>@kişisel[i].Soyad</td>
-                            <td title="@kişisel[i].Eposta">@Html.Raw(kişisel[i].Eposta.Length > 20 ? kişisel[i].Eposta.Substring(0, 17) + "..." : kişisel[i].Eposta)</td>
-                            <td>@kişisel[i].Telefon</td>
-
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr id="@Model[i].UserId">
+                            <td>@Model[i].UserName</td>
+                            <td>@Model[i].FirstName</td>
+                            <td>@Model[i].LastName</td>
+                            <td title="@Model[i].Email">@Html.Raw(Model[i].Email.Length > 20 ? Model[i].Email.Substring(0, 17) + "..." : Model[i].Email)</td>
+                            <td>@Model[i].Phone</td>
                             <td>
                                 <a class="detail" title="Detail" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                                <button type="button" class="btn btn-outline-danger btn-sm kullaniciSil" data-usrName="@kullanici[i].KullaniciAdi" data-usrId="@kullanici[i].KullaniciId" data-toggle="modal" data-target="#exampleModalCenter">
+                                <button type="button" class="btn btn-outline-danger btn-sm kullaniciSil" data-usrName="@Model[i].UserName" data-usrId="@Model[i].UserId" data-toggle="modal" data-target="#exampleModalCenter">
                                     <i class="material-icons" style="font-size: 18px;">&#xE872;</i>
                                 </button>
                             </td>
                         </tr>
-
-                    </tbody>
-                }
-
+                    }
+                </tbody>
             </table>
         </div>
     </div>
 </div>
-
-
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -99,38 +89,28 @@
 
 <script src="~/Content/js/jquery-3.3.1.min.js"></script>
 <script>
+    $(".kullaniciSil").click(function () {
+        $(".modal-body>p.hata").html = "";
+        var kullaniciAdi = $(this).attr("data-usrName");
+        $(".modal-body>p.mesaj").html(kullaniciAdi + " silinsin mi?");
+        var KullaniciID = $(this).attr("data-usrId");
+        $(".usrDelete").data("usrId", KullaniciID);
+        $('#element').toast('show')
+    });
 
-
-    $(".kullaniciSil").click(
-        function () {
-            $(".modal-body>p.hata").html = "";
-            var kullaniciAdi = $(this).attr("data-usrName");
-            $(".modal-body>p.mesaj").html(kullaniciAdi + " silinsin mi?");
-            var KullaniciID = $(this).attr("data-usrId");
-            $(".usrDelete").data("usrId", KullaniciID);
-            $('#element').toast('show')
-        }
-    );
-
-    $(".usrDelete").click(
-        function () {
-            var id = $(this).data("usrId");
-            dataId = "id=" + id;
-            $.ajax(
-                {
-                    type: "POST",
-                    url: "/Admin/KullaniciSil",
-                    data:dataId,
-                    success: function (succes) {   
-                        $("#" + id).remove();
-                    }
-                }
-            );
-        }
-    );
+    $(".usrDelete").click(function () {
+        var id = $(this).data("usrId");
+        dataId = "id=" + id;
+        $.ajax({
+            type: "POST",
+            url: "/Admin/DeleteUser",
+            data: dataId,
+            success: function (success) {
+                $("#" + id).remove();
+            }
+        });
+    });
 </script>
-
-
 
 <style>
     body {
@@ -176,8 +156,8 @@
             }
 
     table.table {
-        table-layout: auto; /* Özgürce genişlik ayarı */
-        width: 100%; /* Tablo tam genişlik */
+        table-layout: auto;
+        width: 100%;
     }
 
         table.table tr th,
@@ -220,4 +200,3 @@
             display: none;
         }
 </style>
-
