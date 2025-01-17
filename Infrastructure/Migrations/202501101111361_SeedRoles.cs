@@ -24,6 +24,7 @@ public partial class SeedRoles : DbMigration
                 {
                     roleManager.Create(new ApplicationRole { Name = "User" });
                 }
+               
             }
         }
 

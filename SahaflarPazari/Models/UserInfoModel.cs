@@ -8,6 +8,7 @@ namespace SahaflarPazari.Models
 {
     public class UserInfoModel
     {
+       
         [Required]
         [StringLength(50)]
         public string FirstName { get; set; }
