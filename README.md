@@ -73,16 +73,19 @@ SahaflarPazari
 5. **Build** and **run** the project. The default start URL (e.g. `localhost:12345`) launches the MVC app.
 
 
-## Important Changes
+## **Important Changes**
 
 1. **Removed `RoleProvider`**  
-   - We now rely on **ASP.NET Identity** (`ApplicationUserManager`, `ApplicationSignInManager`, `ApplicationUser`) with the standard Identity tables (`AspNetUsers`, `AspNetRoles`, etc.).
-2. **Address CRUD** via **AJAX**  
-   - Endpoints in `ProfileController` handle `AddAddress`, `UpdateAddressInfo`, `DeleteAddress`.
-3. **UnitOfWork** & Repositories  
-   - All DB operations go through `_unitOfWork`. 
-   - For example, `_unitOfWork.Books.AddAsync(book)`, `_unitOfWork.CommitAsync()`.
+   - We replaced the legacy `RoleProvider` approach with **ASP.NET Identity**.  
+   - This change involved setting up new classes (`ApplicationUserManager`, `ApplicationSignInManager`, `ApplicationUser`) and switching to Identity’s standard tables (`AspNetUsers`, `AspNetRoles`, etc.).
 
+2. **Controller Refactoring with AJAX & Clean Separation**  
+   - We revised **all** major controllers (e.g., `ProfileController`, `BookController`, `AccountController`) to **lighten** them and delegate logic to services or `_unitOfWork`.
+   - **AJAX-based** endpoints are now the default pattern for create/update/delete operations (address, books, user info, etc.), returning JSON responses instead of full view reloads.
+
+3. **UnitOfWork & Repository Pattern**  
+   - **All** database operations (books, addresses, user data, roles) go through `_unitOfWork` and dedicated repositories.  
+   - Sample calls: `_unitOfWork.Books.AddAsync(book)`, `_unitOfWork.Addresses.DeleteAsync(addressId)`, `_unitOfWork.CommitAsync()`.
 
 ## Usage
 
