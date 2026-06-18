@@ -1,10 +1,9 @@
-
 # SahaflarPazari
 
-An N-layered ASP.NET MVC application for an online used-books marketplace. The project includes **Identity**-based authentication (instead of a custom `RoleProvider`), a **clean** Domain-Infrastructure-Application-Web separation, and **AJAX** endpoints for dynamic interactions like address management, file uploads, etc.
+An N-layered ASP.NET MVC application for an online used-books marketplace. The project includes **Identity**-based authentication (instead of a custom `RoleProvider`), a **clean** Domain-Infrastructur[...]
 
 
-Database tables are in [SahaflarPazari tables](SahaflarPazari.pdf)
+Database tables are in [SahaflarPazarı tables](SahaflarPazarı.pdf)
 
 ## Table of Contents
 - [Overview](#overview)
@@ -19,7 +18,7 @@ Database tables are in [SahaflarPazari tables](SahaflarPazari.pdf)
 
 
 ## Overview
-**SahaflarPazari** is designed to manage books, addresses, user profiles, orders, and more, implementing a multi-layer architecture. We have replaced older `RoleProvider` logic with **ASP.NET Identity** for robust authentication and role handling, introduced **AJAX** for smooth front-end interactions, and established a consistent approach to file uploads (like book images).
+**SahaflarPazari** is designed to manage books, addresses, user profiles, orders, and more, implementing a multi-layer architecture. We have replaced older `RoleProvider` logic with **ASP.NET Identity[...]
 
 
 ## Architecture
@@ -80,7 +79,7 @@ SahaflarPazari
 
 1. **Removed `RoleProvider`**  
    - We replaced the legacy `RoleProvider` approach with **ASP.NET Identity**.  
-   - This change involved setting up new classes (`ApplicationUserManager`, `ApplicationSignInManager`, `ApplicationUser`) and switching to Identity’s standard tables (`AspNetUsers`, `AspNetRoles`, etc.).
+   - This change involved setting up new classes (`ApplicationUserManager`, `ApplicationSignInManager`, `ApplicationUser`) and switching to Identity’s standard tables (`AspNetUsers`, `AspNetRoles`, [...]
 
 2. **Controller Refactoring with AJAX & Clean Separation**  
    - We revised **all** major controllers (e.g., `ProfileController`, `BookController`, `AccountController`) to **lighten** them and delegate logic to services or `_unitOfWork`.
