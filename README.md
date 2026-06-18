@@ -2,7 +2,6 @@
 
 An N-layered ASP.NET MVC application for an online used-books marketplace. The project includes **Identity**-based authentication (instead of a custom `RoleProvider`), a **clean** Domain-Infrastructur[...]
 
-
 Database tables are in [SahaflarPazarı tables](SahaflarPazarı.pdf)
 
 ## Table of Contents
