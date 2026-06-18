@@ -4,7 +4,7 @@
 An N-layered ASP.NET MVC application for an online used-books marketplace. The project includes **Identity**-based authentication (instead of a custom `RoleProvider`), a **clean** Domain-Infrastructure-Application-Web separation, and **AJAX** endpoints for dynamic interactions like address management, file uploads, etc.
 
 
-Database tables are in [Dosyam](SahaflarPazari.pdf)
+Database tables are in [SahaflarPazari tables](SahaflarPazari.pdf)
 
 ## Table of Contents
 - [Overview](#overview)
